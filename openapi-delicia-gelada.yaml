@@ -1,0 +1,762 @@
+openapi: 3.0.3
+info:
+  title: Delicia Gelada - FYNIX
+  description: API destinada para controlar a documentação da Delicia Gelada
+  termsOfService: http://swagger.io/terms/
+  version: 1.0.4.26
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+servers:
+  - url: /
+paths:
+  # ==========================================
+  # CARGO
+  # ==========================================
+  /v1/fynix/deliciagelada/cargo:
+    post:
+      tags:
+        - cargo
+      summary: Adiciona um novo Cargo
+      description: Adiciona um novo Cargo no Banco de Dados
+      requestBody:
+        description: JSON contendo os dados do novo Cargo a ser inserido no sistema
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Cargo'
+      responses:
+        '201':
+          description: Successful operation
+        '400':
+          description: Invalid input
+        '500':
+          description: Error Model
+    get:
+      tags:
+        - cargo
+      summary: Lista todos os cargos
+      description: Listagem de todos os cargos registados no sistema
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Cargo'
+        '404':
+          description: Not Found
+  /v1/fynix/deliciagelada/cargo/{id}:
+    get:
+      tags:
+        - cargo
+      summary: Busca um cargo pelo ID
+      description: Retorna um cargo pelo ID
+      parameters:
+        - name: id
+          in: path
+          description: ID para retornar o cargo
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cargo'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Cargo not found
+    put:
+      tags:
+        - cargo
+      summary: Atualizar um cargo existente pelo ID
+      description: Localizar e atualizar um cargo buscando pelo ID
+      parameters:
+        - name: id
+          in: path
+          description: ID para localizar e atualizar o cargo
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Dados para atualizar o cargo
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Cargo'
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Cargo not found
+    delete:
+      tags:
+        - cargo
+      summary: Excluir um cargo pelo Id
+      description: Localizar e excluir um cargo pelo ID
+      parameters:
+        - name: id
+          in: path
+          description: ID para localizar o cargo
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Cargo not found
+
+  # ==========================================
+  # USUARIO
+  # ==========================================
+  /v1/fynix/deliciagelada/usuario:
+    post:
+      tags:
+        - usuario
+      summary: Adiciona um novo Usuario
+      description: Adiciona um novo Usuario no Banco de Dados
+      requestBody:
+        description: JSON contendo os dados do novo Usuario
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Usuario'
+      responses:
+        '201':
+          description: Successful operation
+        '400':
+          description: Invalid input
+        '500':
+          description: Error Model
+    get:
+      tags:
+        - usuario
+      summary: Lista todos os usuarios
+      description: Listagem de todos os usuarios
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Usuario'
+        '404':
+          description: Not Found
+  /v1/fynix/deliciagelada/usuario/{id}:
+    get:
+      tags:
+        - usuario
+      summary: Busca um usuario pelo ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Usuario'
+        '404':
+          description: Usuario not found
+    put:
+      tags:
+        - usuario
+      summary: Atualiza um usuario pelo ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Usuario'
+      responses:
+        '200':
+          description: Successful operation
+        '404':
+          description: Usuario not found
+    delete:
+      tags:
+        - usuario
+      summary: Exclui um usuario pelo ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+        '404':
+          description: Usuario not found
+
+  # ==========================================
+  # TIPO DE BEBIDA
+  # ==========================================
+  /v1/fynix/deliciagelada/tipobebida:
+    post:
+      tags:
+        - tipo_bebida
+      summary: Adiciona um novo Tipo de Bebida
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TipoBebida'
+      responses:
+        '201':
+          description: Successful operation
+    get:
+      tags:
+        - tipo_bebida
+      summary: Lista todos os tipos de bebida
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TipoBebida'
+  /v1/fynix/deliciagelada/tipobebida/{id}:
+    get:
+      tags:
+        - tipo_bebida
+      summary: Busca um tipo de bebida pelo ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TipoBebida'
+    put:
+      tags:
+        - tipo_bebida
+      summary: Atualiza um tipo de bebida pelo ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TipoBebida'
+      responses:
+        '200':
+          description: Successful operation
+    delete:
+      tags:
+        - tipo_bebida
+      summary: Exclui um tipo de bebida pelo ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+
+  # ==========================================
+  # BEBIDA (Antigo Produto)
+  # ==========================================
+  /v1/fynix/deliciagelada/bebida:
+    post:
+      tags:
+        - bebida
+      summary: Adiciona uma nova Bebida
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Bebida'
+      responses:
+        '201':
+          description: Successful operation
+    get:
+      tags:
+        - bebida
+      summary: Lista todas as bebidas
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Bebida'
+  /v1/fynix/deliciagelada/bebida/{id}:
+    get:
+      tags:
+        - bebida
+      summary: Busca uma bebida pelo ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Bebida'
+    put:
+      tags:
+        - bebida
+      summary: Atualiza uma bebida pelo ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Bebida'
+      responses:
+        '200':
+          description: Successful operation
+    delete:
+      tags:
+        - bebida
+      summary: Exclui uma bebida pelo ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+
+  # ==========================================
+  # CATEGORIA
+  # ==========================================
+  /v1/fynix/deliciagelada/categoria:
+    post:
+      tags:
+        - categoria
+      summary: Adiciona uma nova Categoria
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Categoria'
+      responses:
+        '201':
+          description: Successful operation
+    get:
+      tags:
+        - categoria
+      summary: Lista todas as categorias
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Categoria'
+  /v1/fynix/deliciagelada/categoria/{id}:
+    get:
+      tags:
+        - categoria
+      summary: Busca uma categoria pelo ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Categoria'
+    put:
+      tags:
+        - categoria
+      summary: Atualiza uma categoria pelo ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Categoria'
+      responses:
+        '200':
+          description: Successful operation
+    delete:
+      tags:
+        - categoria
+      summary: Exclui uma categoria pelo ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+
+  # ==========================================
+  # CATEGORIA BEBIDA (Relacionamento N:M)
+  # ==========================================
+  /v1/fynix/deliciagelada/categoriabebida:
+    post:
+      tags:
+        - categoria_bebida
+      summary: Adiciona um novo vínculo entre Categoria e Bebida
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoriaBebida'
+      responses:
+        '201':
+          description: Successful operation
+    get:
+      tags:
+        - categoria_bebida
+      summary: Lista todos os vínculos de categorias e bebidas
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CategoriaBebida'
+  /v1/fynix/deliciagelada/categoriabebida/{id}:
+    get:
+      tags:
+        - categoria_bebida
+      summary: Busca um vínculo de categoria e bebida pelo ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoriaBebida'
+    put:
+      tags:
+        - categoria_bebida
+      summary: Atualiza um vínculo pelo ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoriaBebida'
+      responses:
+        '200':
+          description: Successful operation
+    delete:
+      tags:
+        - categoria_bebida
+      summary: Exclui um vínculo pelo ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+
+  # ==========================================
+  # STATUS
+  # ==========================================
+  /v1/fynix/deliciagelada/status:
+    post:
+      tags:
+        - status
+      summary: Adiciona um novo Status
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Status'
+      responses:
+        '201':
+          description: Successful operation
+    get:
+      tags:
+        - status
+      summary: Lista todos os status
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Status'
+  /v1/fynix/deliciagelada/status/{id}:
+    get:
+      tags:
+        - status
+      summary: Busca um status pelo ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+    put:
+      tags:
+        - status
+      summary: Atualiza um status pelo ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Status'
+      responses:
+        '200':
+          description: Successful operation
+    delete:
+      tags:
+        - status
+      summary: Exclui um status pelo ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+
+components:
+  schemas:
+    Cargo:
+      type: object
+      required:
+        - nome
+      properties:
+        id:
+          type: integer
+          format: int64
+        nome:
+          type: string
+          
+    Usuario:
+      type: object
+      required:
+        - nome
+        - email_corporativo
+        - senha
+        - id_cargo
+      properties:
+        id:
+          type: integer
+          format: int64
+        nome:
+          type: string
+        email_corporativo:
+          type: string
+        senha:
+          type: string
+        foto:
+          type: string
+        id_cargo:
+          type: integer
+          format: int64
+          
+    TipoBebida:
+      type: object
+      required:
+        - nome
+      properties:
+        id:
+          type: integer
+          format: int64
+        nome:
+          type: string
+
+    Bebida:
+      type: object
+      required:
+        - nome
+        - preco
+        - id_tipo_bebida
+        - id_usuario
+        - id_status
+      properties:
+        id:
+          type: integer
+          format: int64
+        nome:
+          type: string
+        descricao:
+          type: string
+        preco:
+          type: number
+          format: float
+        imagem:
+          type: string
+        id_tipo_bebida:
+          type: integer
+          format: int64
+        id_usuario:
+          type: integer
+          format: int64
+        id_status:
+          type: integer
+          format: int64
+
+    Categoria:
+      type: object
+      required:
+        - nome
+        - id_status
+      properties:
+        id:
+          type: integer
+          format: int64
+        nome:
+          type: string
+        id_status:
+          type: integer
+          format: int64
+
+    CategoriaBebida:
+      type: object
+      required:
+        - id_categoria
+        - id_bebida
+      properties:
+        id:
+          type: integer
+          format: int64
+        id_categoria:
+          type: integer
+          format: int64
+        id_bebida:
+          type: integer
+          format: int64
+
+    Status:
+      type: object
+      required:
+        - nome
+      properties:
+        id:
+          type: integer
+          format: int64
+        nome:
+          type: string
