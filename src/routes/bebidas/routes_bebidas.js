@@ -28,10 +28,7 @@ rota.post('/bebida', async (request, response) => {
 
 // Rota para listar todas as bebidas (GET)
 rota.get('/bebida', async (request, response) => {
-    // Chama o Controller direto, pois não precisa de ID nem Body
-    let dados = await controllerBebida.listarBebidas()
-
-    // Devolve a resposta
+    let dados = await controllerBebida.listarBebidas(request.headers)
     response.status(dados.status_code).json(dados)
 })
 

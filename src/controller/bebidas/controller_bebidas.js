@@ -78,20 +78,17 @@ const inserirBebida = async (bebida, contentType) => {
     }
 }
 
-// Função para selecionar todas as bebidas cadastradas
-const listarBebidas = async () => {
+// A função agora recebe 'headers' para verificar o Age Gate
+const listarBebidas = async (headers) => {
     let message = JSON.parse(JSON.stringify(config_messages))
 
     try {
         let result = await bebidaDAO.listarBebidas() 
 
         if(result && result.length > 0){
-            
-            // LOOP MÁGICO: Vamos buscar as categorias de cada bebida!
             for(let bebida of result){
                 let resultCategorias = await categoriaBebidaController.buscarCategoriaByIdBebida(bebida.id)
                 
-                // Se encontrou categorias, anexa ao JSON da bebida. Se não, retorna um array vazio.
                 if(resultCategorias.status){
                     bebida.categorias = resultCategorias.response
                 } else {
@@ -99,10 +96,24 @@ const listarBebidas = async () => {
                 }
             }
             
+            // Verifica o header de verificação de idade
+            // Se o usuário NÃO for maior (não enviou o header), aplicamos o filtro.
+            const ehMaiorDe18 = headers['x-age-verified'] === 'true';
+
+            let bebidasFiltradas = result;
+
+            if (!ehMaiorDe18) {
+                bebidasFiltradas = result.filter(bebida => {
+                    // Mantém apenas bebidas que NÃO tenham a categoria "NÃO ALCOÓLICO" (Lógica inversa)
+                    // Na verdade, para restringir, mantemos apenas o que é NÃO ALCOÓLICO
+                    return bebida.categorias.some(cat => cat.nome.toUpperCase() === "NÃO ALCOÓLICO");
+                })
+            }
+            
             message.DEFAULT_MESSAGE.status = message.SUCCESS_RESPONSE.status 
             message.DEFAULT_MESSAGE.status_code = message.SUCCESS_RESPONSE.status_code
             message.DEFAULT_MESSAGE.message = message.SUCCESS_RESPONSE.message
-            message.DEFAULT_MESSAGE.response = result
+            message.DEFAULT_MESSAGE.response = bebidasFiltradas
             
             return message.DEFAULT_MESSAGE
         }

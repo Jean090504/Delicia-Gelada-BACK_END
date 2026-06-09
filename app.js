@@ -9,6 +9,7 @@ const express = require('express')
 const cors = require('cors')
 const helmet = require('helmet')
 const bodyParser = require('body-parser')
+const { validarToken } = require('./src/modelo/jwt.js')
 
 // Criação do objeto app
 const app = express()
@@ -35,12 +36,17 @@ const categoriaRotas = require('./src/routes/categoria/routes_categoria.js')
 const usuarioRotas = require('./src/routes/usuario/routes_usuario.js')
 const bebidaRotas = require('./src/routes/bebidas/routes_bebidas.js')
 
+
 app.use('/v1/fynix/deliciagelada', cargoRotas)
 app.use('/v1/fynix/deliciagelada', tipoBebidaRotas)
 app.use('/v1/fynix/deliciagelada', statusRotas)
 app.use('/v1/fynix/deliciagelada', categoriaRotas)
 app.use('/v1/fynix/deliciagelada', usuarioRotas)
 app.use('/v1/fynix/deliciagelada', bebidaRotas)
+app.use('/v1/fynix/deliciagelada/bebida', bebidaRotas) // Rota pública para listar bebidas
+app.post('/v1/fynix/deliciagelada/bebida', validarToken, bebidaRotas);
+app.put('/v1/fynix/deliciagelada/bebida/:id', validarToken, bebidaRotas);
+app.delete('/v1/fynix/deliciagelada/bebida/:id', validarToken, bebidaRotas);
 
 const PORT = process.env.PORT || 3000
 
