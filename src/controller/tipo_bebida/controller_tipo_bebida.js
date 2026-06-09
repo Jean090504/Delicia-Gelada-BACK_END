@@ -1,5 +1,5 @@
 /*******************************************************************************************************************************************
- * Objetivo: Arquivo responsável pelo controle de dados do projeto Delicia Gelada - CRUD de Cargo
+ * Objetivo: Arquivo responsável pelo controle de dados do projeto Delicia Gelada - CRUD do Tipo de Bebida
  * Data: 09/06/2026
  * Autor: Jean Costa
  * Versão 1.0
@@ -9,39 +9,39 @@
 const config_messages = require('../modelo/configMessages.js')
 
 //Import do arquivo de DAO para manipular os dados no banco de dados
-const cargoDAO = require('../../../model/DAO/cargo/cargo.js')
+const tipoBebidaDAO = require('../../../model/DAO/tipo_bebida/tipo_bebida.js')
 
-// Função para validar os dados do cargo
-const validarDados = async (cargo) =>{
+// Função para validar os dados do tipo de bebida
+const validarDados = async (tipoBebida) =>{
     let message = JSON.parse(JSON.stringify(config_messages))
 
-    if(cargo.nome == undefined || cargo.nome == "" || cargo.nome == null || cargo.nome.length > 45){
+    if(tipoBebida.nome == undefined || tipoBebida.nome == "" || tipoBebida.nome == null || tipoBebida.nome.length > 45){
         message.ERROR_BAD_REQUEST.field = "[nome] invalido"
         return message.ERROR_BAD_REQUEST
     }
-
+    
     return false
 }
 
-// Função para inserir um novo cargo 
-const inserirCargo = async (cargo, contentType) => {   
+// Função para inserir um novo tipo de bebida
+const inserirTipoBebida = async (tipoBebida, contentType) => {
     let message = JSON.parse(JSON.stringify(config_messages))
 
     try {
         if (String(contentType).toLowerCase() == 'application/json') {
-            let validar = await validarDados(cargo)
+            let validar = await validarDados(tipoBebida)
 
             if(validar){
                 return validar
             } else {
-                let result = await cargoDAO.insertCargo(cargo)
+                let result = await tipoBebidaDAO.insertTipoBebida(tipoBebida)
 
                 if(result){
-                    cargo.id = result 
+                    tipoBebida.id = result 
                     message.DEFAULT_MESSAGE.status = message.SUCCESS_CREATED_ITEM.status
                     message.DEFAULT_MESSAGE.status_code = message.SUCCESS_CREATED_ITEM.status_code
                     message.DEFAULT_MESSAGE.message = message.SUCCESS_CREATED_ITEM.message
-                    message.DEFAULT_MESSAGE.response = cargo
+                    message.DEFAULT_MESSAGE.response = tipoBebida
                 } else {
                     return message.ERROR_INTERNAL_SERVER_MODEL
                 }
@@ -50,19 +50,18 @@ const inserirCargo = async (cargo, contentType) => {
         }else{
             return message.ERROR_INVALID_CONTENT_TYPE
         }
-    }
-        catch (error) {
+    } catch (error) {
         console.log(error)
         return message.ERROR_INTERNAL_SERVER_MODEL
     }
 }
 
-// Função para selecionar todos aos cargos cadastrados
-const listarCargo = async () => {
+// Função para selecionar todos os tipos de bebida cadastrados
+const listarTipoBebida = async () => {
     let message = JSON.parse(JSON.stringify(config_messages))
 
     try {
-        let result = await cargoDAO.selectAllCargo()
+        let result = await tipoBebidaDAO.selectAllTipoBebida()
 
         if(result){
             message.DEFAULT_MESSAGE.status = message.SUCCESS_RESPONSE.status
@@ -81,8 +80,8 @@ const listarCargo = async () => {
     }
 }
 
-// Função para selecionar um cargo específico pelo ID
-const buscarCargoById = async (id) => {
+// Função para selecionar um tipo de bebida específico pelo ID
+const buscarTipoBebidaById = async (id) => {
     let message = JSON.parse(JSON.stringify(config_messages))
 
     if(id == undefined || id == "" || id == null || isNaN(id)){
@@ -90,18 +89,18 @@ const buscarCargoById = async (id) => {
         return message.ERROR_BAD_REQUEST
     }else{
         try {
-            let result = await cargoDAO.selectCargoById(id)
+            let result = await tipoBebidaDAO.selectTipoBebidaById(id)
 
             if(result){
                 message.DEFAULT_MESSAGE.status = message.SUCCESS_RESPONSE.status
                 message.DEFAULT_MESSAGE.status_code = message.SUCCESS_RESPONSE.status_code
                 message.DEFAULT_MESSAGE.message = message.SUCCESS_RESPONSE.message
                 message.DEFAULT_MESSAGE.response = result
-            } else {
+            }
+            else {
                 return message.ERROR_NOT_FOUND_ITEM
             }
             return message.DEFAULT_MESSAGE
-
         } catch (error) {
             console.log(error)
             return message.ERROR_INTERNAL_SERVER_MODEL
@@ -109,16 +108,16 @@ const buscarCargoById = async (id) => {
     }
 }
 
-// Função para deletar um cargo específico pelo ID
-const deleteCargoById = async (id) => {
+// Função para deletar um tipo de bebida específico pelo ID
+const deleteTipoBebidaById = async (id) => {
     let message = JSON.parse(JSON.stringify(config_messages))
 
      try {
-            let validaBuscaID = await buscarCargoById(id)
+            let validaBuscaID = await buscarTipoBebidaById(id)
     
             //Validação para verificar se o ID é válido (não vazio, não nulo, não indefinido e é um número)
             if(validaBuscaID.status){
-                let result = await cargoDAO.deleteCargo(id)
+                let result = await tipoBebidaDAO.deleteTipoBebida(id)
             
                 if(result){
                         return message.SUCCESS_DELETED_ITEM //200
@@ -137,28 +136,28 @@ const deleteCargoById = async (id) => {
     
 }
 
-// Função para atualizar um cargo específico pelo ID
-const atualizarCargo = async (id, cargo, contentType) => {
+// Função para atualizar um tipo de bebida específico pelo ID
+const atualizarTipoBebida = async (id, tipoBebida, contentType) => {
     let message = JSON.parse(JSON.stringify(config_messages))
 
     try {
         if (String(contentType).toLowerCase() == 'application/json') {
-            let validar = await validarDados(cargo)
+            let validar = await validarDados(tipoBebida)
 
             if(validar){
                 return validar
             } else {
-                let validaBuscaID = await buscarCargoById(id)
+                let validaBuscaID = await buscarTipoBebidaById(id)
 
                 if(validaBuscaID.status){
-                    let result = await cargoDAO.updateCargo(id, cargo)
+                    let result = await tipoBebidaDAO.updateTipoBebida(id, tipoBebida)
 
                     if(result){
-                        cargo.id = id
+                        tipoBebida.id = id
                         message.DEFAULT_MESSAGE.status = message.SUCCESS_RESPONSE.status
                         message.DEFAULT_MESSAGE.status_code = message.SUCCESS_RESPONSE.status_code
                         message.DEFAULT_MESSAGE.message = message.SUCCESS_RESPONSE.message
-                        message.DEFAULT_MESSAGE.response = cargo
+                        message.DEFAULT_MESSAGE.response = tipoBebida
                     } else {
                         return message.ERROR_INTERNAL_SERVER_MODEL
                     }
@@ -177,10 +176,12 @@ const atualizarCargo = async (id, cargo, contentType) => {
     }
 }
 
+
+
 module.exports = {
-    inserirCargo,
-    listarCargo,
-    buscarCargoById,
-    deleteCargoById,
-    atualizarCargo
+    inserirTipoBebida,
+    listarTipoBebida,
+    buscarTipoBebidaById,
+    deleteTipoBebidaById,
+    atualizarTipoBebida
 }

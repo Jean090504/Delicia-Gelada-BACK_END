@@ -1,5 +1,5 @@
 /*******************************************************************************************************************************************
- * Objetivo: Arquivo responsável pelo controle de dados do projeto Delicia Gelada - CRUD de Cargo
+ * Objetivo: Arquivo responsável pelo controle de dados do projeto Delicia Gelada - CRUD do Status
  * Data: 09/06/2026
  * Autor: Jean Costa
  * Versão 1.0
@@ -9,13 +9,13 @@
 const config_messages = require('../modelo/configMessages.js')
 
 //Import do arquivo de DAO para manipular os dados no banco de dados
-const cargoDAO = require('../../../model/DAO/cargo/cargo.js')
+const statusDAO = require('../../../model/DAO/status/status.js')
 
-// Função para validar os dados do cargo
-const validarDados = async (cargo) =>{
+// Função para validar os dados do status
+const validarDados = async (status) =>{
     let message = JSON.parse(JSON.stringify(config_messages))
 
-    if(cargo.nome == undefined || cargo.nome == "" || cargo.nome == null || cargo.nome.length > 45){
+    if(status.nome == undefined || status.nome == "" || status.nome == null || status.nome.length > 20){
         message.ERROR_BAD_REQUEST.field = "[nome] invalido"
         return message.ERROR_BAD_REQUEST
     }
@@ -23,26 +23,27 @@ const validarDados = async (cargo) =>{
     return false
 }
 
-// Função para inserir um novo cargo 
-const inserirCargo = async (cargo, contentType) => {   
+// Função para inserir um novo status
+const inserirStatus = async (status, contentType) => {
     let message = JSON.parse(JSON.stringify(config_messages))
 
     try {
         if (String(contentType).toLowerCase() == 'application/json') {
-            let validar = await validarDados(cargo)
+            let validar = await validarDados(status)
 
             if(validar){
                 return validar
             } else {
-                let result = await cargoDAO.insertCargo(cargo)
+                let result = await statusDAO.insertStatus(status)
 
                 if(result){
-                    cargo.id = result 
+                    status.id = result
                     message.DEFAULT_MESSAGE.status = message.SUCCESS_CREATED_ITEM.status
                     message.DEFAULT_MESSAGE.status_code = message.SUCCESS_CREATED_ITEM.status_code
                     message.DEFAULT_MESSAGE.message = message.SUCCESS_CREATED_ITEM.message
-                    message.DEFAULT_MESSAGE.response = cargo
-                } else {
+                    message.DEFAULT_MESSAGE.response = status
+                }
+                else {
                     return message.ERROR_INTERNAL_SERVER_MODEL
                 }
                 return message.DEFAULT_MESSAGE
@@ -50,39 +51,39 @@ const inserirCargo = async (cargo, contentType) => {
         }else{
             return message.ERROR_INVALID_CONTENT_TYPE
         }
-    }
-        catch (error) {
+    } catch (error) {
         console.log(error)
         return message.ERROR_INTERNAL_SERVER_MODEL
     }
 }
 
-// Função para selecionar todos aos cargos cadastrados
-const listarCargo = async () => {
+
+// Função para selecionar todos os status cadastrados
+const listarStatus = async () => {
     let message = JSON.parse(JSON.stringify(config_messages))
 
     try {
-        let result = await cargoDAO.selectAllCargo()
+        let result = await statusDAO.selectAllStatus()
 
         if(result){
             message.DEFAULT_MESSAGE.status = message.SUCCESS_RESPONSE.status
             message.DEFAULT_MESSAGE.status_code = message.SUCCESS_RESPONSE.status_code
             message.DEFAULT_MESSAGE.message = message.SUCCESS_RESPONSE.message
             message.DEFAULT_MESSAGE.response = result
-        } else {
+        }
+        else {
             return message.ERROR_NOT_FOUND_ITEM
         }
         return message.DEFAULT_MESSAGE
-
     }
-        catch (error) {
+    catch (error) {
         console.log(error)
         return message.ERROR_INTERNAL_SERVER_MODEL
     }
 }
 
-// Função para selecionar um cargo específico pelo ID
-const buscarCargoById = async (id) => {
+// Função para selecionar um status específico pelo ID
+const buscarStatusById = async (id) => {
     let message = JSON.parse(JSON.stringify(config_messages))
 
     if(id == undefined || id == "" || id == null || isNaN(id)){
@@ -90,18 +91,18 @@ const buscarCargoById = async (id) => {
         return message.ERROR_BAD_REQUEST
     }else{
         try {
-            let result = await cargoDAO.selectCargoById(id)
+            let result = await statusDAO.selectStatusById(id)
 
             if(result){
                 message.DEFAULT_MESSAGE.status = message.SUCCESS_RESPONSE.status
                 message.DEFAULT_MESSAGE.status_code = message.SUCCESS_RESPONSE.status_code
                 message.DEFAULT_MESSAGE.message = message.SUCCESS_RESPONSE.message
                 message.DEFAULT_MESSAGE.response = result
-            } else {
+            }
+            else {
                 return message.ERROR_NOT_FOUND_ITEM
             }
             return message.DEFAULT_MESSAGE
-
         } catch (error) {
             console.log(error)
             return message.ERROR_INTERNAL_SERVER_MODEL
@@ -109,16 +110,16 @@ const buscarCargoById = async (id) => {
     }
 }
 
-// Função para deletar um cargo específico pelo ID
-const deleteCargoById = async (id) => {
+// Função para deletar um status específico pelo ID
+const deleteStatusById = async (id) => {
     let message = JSON.parse(JSON.stringify(config_messages))
 
      try {
-            let validaBuscaID = await buscarCargoById(id)
+            let validaBuscaID = await buscarStatusById(id)
     
             //Validação para verificar se o ID é válido (não vazio, não nulo, não indefinido e é um número)
             if(validaBuscaID.status){
-                let result = await cargoDAO.deleteCargo(id)
+                let result = await statusDAO.deleteStatus(id)
             
                 if(result){
                         return message.SUCCESS_DELETED_ITEM //200
@@ -137,28 +138,28 @@ const deleteCargoById = async (id) => {
     
 }
 
-// Função para atualizar um cargo específico pelo ID
-const atualizarCargo = async (id, cargo, contentType) => {
+// Função para atualizar um status específico pelo ID
+const atualizarStatus = async (id, status, contentType) => {
     let message = JSON.parse(JSON.stringify(config_messages))
 
     try {
         if (String(contentType).toLowerCase() == 'application/json') {
-            let validar = await validarDados(cargo)
+            let validar = await validarDados(status)
 
             if(validar){
                 return validar
             } else {
-                let validaBuscaID = await buscarCargoById(id)
+                let validaBuscaID = await buscarStatusById(id)
 
                 if(validaBuscaID.status){
-                    let result = await cargoDAO.updateCargo(id, cargo)
+                    let result = await statusDAO.updateStatus(id, status)
 
                     if(result){
-                        cargo.id = id
+                        status.id = id
                         message.DEFAULT_MESSAGE.status = message.SUCCESS_RESPONSE.status
                         message.DEFAULT_MESSAGE.status_code = message.SUCCESS_RESPONSE.status_code
                         message.DEFAULT_MESSAGE.message = message.SUCCESS_RESPONSE.message
-                        message.DEFAULT_MESSAGE.response = cargo
+                        message.DEFAULT_MESSAGE.response = status
                     } else {
                         return message.ERROR_INTERNAL_SERVER_MODEL
                     }
@@ -178,9 +179,9 @@ const atualizarCargo = async (id, cargo, contentType) => {
 }
 
 module.exports = {
-    inserirCargo,
-    listarCargo,
-    buscarCargoById,
-    deleteCargoById,
-    atualizarCargo
+    inserirStatus,
+    listarStatus,
+    buscarStatusById,
+    deleteStatusById,
+    atualizarStatus
 }

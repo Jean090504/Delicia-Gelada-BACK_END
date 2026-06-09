@@ -7,7 +7,7 @@
 
 //Padronização de cabeçalho para retorno dos endpoints da API, para manter o código mais organizado e facilitar a manutenção
 const DEFAULT_MESSAGE = {
-    api_description: 'API para cadastro de filmes',
+    api_description: 'API para gestão de categorias - Delícia Gelada',
     development: 'Jean Costa Alves da Silva',
     version: '1.0.4.26',
     status: Boolean,
