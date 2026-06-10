@@ -64,5 +64,29 @@ use db_delicia_gelada;
     references tbl_status(id)    
  );
  
+ create table tbl_categoria_bebida(
+    id int not null primary key auto_increment,
+    id_categoria int not null,
+    id_bebida int not null,
+    
+    constraint FK_CATEGORIA_CATEGORIABEBIDA
+    foreign key (id_categoria)
+    references tbl_categoria(id),
+    
+    constraint FK_BEBIDA_CATEGORIABEBIDA
+    foreign key (id_bebida)
+    references tbl_bebida(id)
+);
+ 
+ select * from tbl_categoria;
+  select * from tbl_categoria_bebida;
+  
+
+INSERT INTO tbl_bebida (nome, descricao, preco, imagem, id_tipo_bebida, id_usuario, id_status)
+VALUES ('Coca-Cola', 'Refrigerante em lata 350ml', 5.50, 'https://meuservidor.com.br/coca.jpg', 1, 1, 1);
+
+INSERT INTO tbl_categoria_bebida (id_categoria, id_bebida) 
+VALUES (3, 1);
+
  
  
