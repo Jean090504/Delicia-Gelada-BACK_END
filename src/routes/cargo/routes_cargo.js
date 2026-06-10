@@ -6,11 +6,14 @@
 * No CRUD não precisa mudar o nome do ENDPOINT, mas sim o verbo de utilizado para cada ação (GET, POST, PUT, DELETE)
 ********************************************************************************************************************************************/
 
+// Import do Express
 const express = require('express')
+// Criando o objeto de rotas do Express
 const rota = express.Router()
+// Import do controller de cargo para acessar as funções de negócio
 const controllerCargo = require('../../controller/cargo/controller_cargo.js')
+// Import do body-parser para manipular o corpo das requisições
 const bodyParser = require('body-parser')
-
 //Criando um objeto para manipular dados do body da API em formato JSON
 const bodyParserJSON = bodyParser.json()
 
