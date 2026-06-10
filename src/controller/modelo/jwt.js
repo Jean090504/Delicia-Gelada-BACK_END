@@ -13,7 +13,7 @@ const validarToken = (request, response, next) => {
     jwt.verify(token, SECRET, (err, user) => {
         if (err) return response.status(403).json({ message: "Token inválido ou expirado." })
         
-        request.user = user; // Salva o usuário no request para usar depois
+        request.user = user // Salva o usuário no request para usar depois
         next()
     })
 }

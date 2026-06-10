@@ -37,16 +37,16 @@ const usuarioRotas = require('./src/routes/usuario/routes_usuario.js')
 const bebidaRotas = require('./src/routes/bebidas/routes_bebidas.js')
 
 
-app.use('/v1/fynix/deliciagelada', cargoRotas)
-app.use('/v1/fynix/deliciagelada', tipoBebidaRotas)
-app.use('/v1/fynix/deliciagelada', statusRotas)
-app.use('/v1/fynix/deliciagelada', categoriaRotas)
-app.use('/v1/fynix/deliciagelada', usuarioRotas)
-app.use('/v1/fynix/deliciagelada', bebidaRotas)
-app.use('/v1/fynix/deliciagelada/bebida', bebidaRotas) // Rota pública para listar bebidas
-app.post('/v1/fynix/deliciagelada/bebida', validarToken, bebidaRotas);
-app.put('/v1/fynix/deliciagelada/bebida/:id', validarToken, bebidaRotas);
-app.delete('/v1/fynix/deliciagelada/bebida/:id', validarToken, bebidaRotas);
+app.use('/v1/fynix/deliciagelada', cors(), cargoRotas)
+app.use('/v1/fynix/deliciagelada', cors(), tipoBebidaRotas)
+app.use('/v1/fynix/deliciagelada', cors(), statusRotas)
+app.use('/v1/fynix/deliciagelada', cors(), categoriaRotas)
+app.use('/v1/fynix/deliciagelada', cors(), usuarioRotas)
+app.use('/v1/fynix/deliciagelada', cors(), bebidaRotas)
+app.use('/v1/fynix/deliciagelada/bebida', cors(), bebidaRotas) // Rota pública para listar bebidas
+app.post('/v1/fynix/deliciagelada/bebida', cors(), validarToken, bebidaRotas)
+app.put('/v1/fynix/deliciagelada/bebida/:id', cors(), validarToken, bebidaRotas)
+app.delete('/v1/fynix/deliciagelada/bebida/:id', cors(), validarToken, bebidaRotas)
 
 const PORT = process.env.PORT || 3000
 
