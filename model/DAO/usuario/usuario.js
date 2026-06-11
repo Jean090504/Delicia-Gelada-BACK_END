@@ -14,20 +14,25 @@ const knexConfig = require('../../database_config_knex/knexFile.js')
 // Cria uma instância do Knex usando as configurações de desenvolvimento
 const knexConex = knex(knexConfig.development)
 
+const bcrypt = require('bcrypt')
+
 // Função para inserir um novo usuário no banco de dados
 async function inserirUsuario(dadosUsuario) {
     try {
-        // CORREÇÃO: Usando dadosUsuario em vez de categoria, e mapeando 'email' para 'email_corporativo'
+        const saltRounds = 10
+        const hashSenha = await bcrypt.hash(dadosUsuario.senha, saltRounds)
+
+        // Usando dadosUsuario em vez de categoria, e mapeando 'email' para 'email_corporativo'
         let sql = `insert into tbl_usuario (nome, 
                                             email_corporativo,
                                             senha,
                                             foto,
                                             id_cargo)
-                            values ('${dadosUsuario.nome}',
-                                    '${dadosUsuario.email}', 
-                                    '${dadosUsuario.senha}',
-                                    '${dadosUsuario.foto}',
-                                    ${dadosUsuario.id_cargo});`
+                                            values ('${dadosUsuario.nome}',
+                                            '${dadosUsuario.email}', 
+                                            '${hashSenha}', 
+                                            '${dadosUsuario.foto}',
+                                            ${dadosUsuario.id_cargo});`
                                     
         // Executa o comando SQL no banco de dados
         let result = await knexConex.raw(sql)
@@ -86,10 +91,11 @@ async function buscarUsuarioById(id) {
 // Função para atualizar um usuário específico pelo ID
 async function updateUsuario(dadosUsuario, id) {
     try {
-        // CORREÇÃO: Mapeando 'email' para 'email_corporativo'
+        const hashSenha = await bcrypt.hash(dadosUsuario.senha, 10)
+
         let sql = `update tbl_usuario set nome = '${dadosUsuario.nome}',
                                             email_corporativo = '${dadosUsuario.email}',
-                                            senha = '${dadosUsuario.senha}',
+                                            senha = '${hashSenha}',
                                             foto = '${dadosUsuario.foto}',
                                             id_cargo = ${dadosUsuario.id_cargo}
                     where id = ${id};`
@@ -125,11 +131,34 @@ async function deleteUsuario(id) {
     }
 }
 
+// SQL para retornar apenas email e senha para autenticação do usuário
+async function autenticarUsuario(email) {
+    try {
+        console.log("DAO recebendo e-mail:", email)
+
+        let result = await knexConex('tbl_usuario')
+            .select('id', 'email_corporativo', 'senha')
+            .where('email_corporativo', email)
+
+            console.log("Resultado bruto do Knex:", result)
+
+        if (result && result.length > 0) {
+            return result; // Retorna o array com os dados
+        } else {
+            return false;
+        }
+    } catch (error) {
+        console.error('Erro ao autenticar usuário:', error);
+        return false;
+    }
+}
+
 // Exportando com os nomes exatamente iguais aos que você usou no Controller!
 module.exports = {
     inserirUsuario,
     listarUsuarios,
     buscarUsuarioById,
     updateUsuario,
-    deleteUsuario
+    deleteUsuario,
+    autenticarUsuario
 }

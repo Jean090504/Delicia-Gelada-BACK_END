@@ -22,7 +22,7 @@ const validarDados = async (usuario) =>{
     }else if(usuario.email == undefined || usuario.email == "" || usuario.email == null || usuario.email.length > 255){
         message.ERROR_BAD_REQUEST.field = "[email] é obrigatorio e não pode ser vazio"
         return message.ERROR_BAD_REQUEST
-    }else if(usuario.senha == undefined || usuario.senha == "" || usuario.senha == null || usuario.senha.length > 20){
+    }else if(usuario.senha == undefined || usuario.senha == "" || usuario.senha == null || usuario.senha.length > 512){
         message.ERROR_BAD_REQUEST.field = "[senha] é obrigatorio e não pode ser vazio"
         return message.ERROR_BAD_REQUEST
     
