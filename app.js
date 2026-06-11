@@ -8,7 +8,7 @@
 const express = require('express')
 const cors = require('cors')
 const helmet = require('helmet')
-const { validarToken } = require('./src/modelo/jwt.js')
+const { validarToken } = require('./src/controller/modelo/jwt.js')
 
 // Criação do objeto app
 const app = express()

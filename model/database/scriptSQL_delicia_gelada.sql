@@ -79,7 +79,7 @@ use db_delicia_gelada;
 );
  
  select * from tbl_categoria;
-  select * from tbl_categoria_bebida;
+select * from tbl_categoria_bebida;
   
 
 INSERT INTO tbl_bebida (nome, descricao, preco, imagem, id_tipo_bebida, id_usuario, id_status)

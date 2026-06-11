@@ -648,11 +648,8 @@ components:
       required:
         - nome
       properties:
-        id:
-          type: integer
-          format: int64
-        nome:
-          type: string
+        id: {type: integer, format: int64}
+        nome: {type: string}
           
     Usuario:
       type: object
@@ -660,64 +657,43 @@ components:
         - nome
         - email_corporativo
         - senha
+        - foto
         - id_cargo
       properties:
-        id:
-          type: integer
-          format: int64
-        nome:
-          type: string
-        email_corporativo:
-          type: string
-        senha:
-          type: string
-        foto:
-          type: string
-        id_cargo:
-          type: integer
-          format: int64
+        id: {type: integer, format: int64}
+        nome: {type: string}
+        email_corporativo: {type: string}
+        senha: {type: string}
+        foto: {type: string}
+        id_cargo: {type: integer, format: int64}
           
     TipoBebida:
       type: object
       required:
         - nome
       properties:
-        id:
-          type: integer
-          format: int64
-        nome:
-          type: string
+        id: {type: integer, format: int64}
+        nome: {type: string}
 
     Bebida:
       type: object
       required:
         - nome
+        - descricao
         - preco
+        - imagem
         - id_tipo_bebida
         - id_usuario
         - id_status
       properties:
-        id:
-          type: integer
-          format: int64
-        nome:
-          type: string
-        descricao:
-          type: string
-        preco:
-          type: number
-          format: float
-        imagem:
-          type: string
-        id_tipo_bebida:
-          type: integer
-          format: int64
-        id_usuario:
-          type: integer
-          format: int64
-        id_status:
-          type: integer
-          format: int64
+        id: {type: integer, format: int64}
+        nome: {type: string}
+        descricao: {type: string}
+        preco: {type: number, format: float}
+        imagem: {type: string}
+        id_tipo_bebida: {type: integer, format: int64}
+        id_usuario: {type: integer, format: int64}
+        id_status: {type: integer, format: int64}
 
     Categoria:
       type: object
@@ -725,14 +701,9 @@ components:
         - nome
         - id_status
       properties:
-        id:
-          type: integer
-          format: int64
-        nome:
-          type: string
-        id_status:
-          type: integer
-          format: int64
+        id: {type: integer, format: int64}
+        nome: {type: string}
+        id_status: {type: integer, format: int64}
 
     CategoriaBebida:
       type: object
@@ -740,23 +711,14 @@ components:
         - id_categoria
         - id_bebida
       properties:
-        id:
-          type: integer
-          format: int64
-        id_categoria:
-          type: integer
-          format: int64
-        id_bebida:
-          type: integer
-          format: int64
+        id: {type: integer, format: int64}
+        id_categoria: {type: integer, format: int64}
+        id_bebida: {type: integer, format: int64}
 
     Status:
       type: object
       required:
         - nome
       properties:
-        id:
-          type: integer
-          format: int64
-        nome:
-          type: string
+        id: {type: integer, format: int64}
+        nome: {type: string}
