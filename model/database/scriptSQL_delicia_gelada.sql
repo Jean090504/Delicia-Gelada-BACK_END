@@ -90,3 +90,166 @@ select * from tbl_bebida;
 SELECT email_corporativo FROM tbl_usuario;
 
 select  * from tbl_usuario;
+
+ALTER TABLE tbl_categoria 
+ADD COLUMN descricao VARCHAR(255) NULL;
+
+select * from tbl_categoria;
+
+INSERT INTO tbl_bebida (nome, descricao, preco, imagem, id_tipo_bebida, id_usuario, id_status)
+VALUES ('Coca-Cola', 'Refrigerante em lata 350ml', 5.50, 'https://meuservidor.com.br/coca.jpg', 1, 1, 1);
+
+INSERT INTO tbl_categoria_bebida (id_categoria, id_bebida) 
+VALUES (3, 1);
+
+
+
+-- Views
+#Ela serve para a área administrativa, porque mostra detalhes da bebida.
+CREATE VIEW vw_bebidas_completas AS
+SELECT
+    tbl_bebida.nome AS nome_bebida,
+
+    GROUP_CONCAT(tbl_categoria.nome SEPARATOR ', ') AS categoria,
+
+    tbl_tipo_bebida.nome AS tipo,
+
+    tbl_bebida.preco,
+
+    tbl_usuario.nome AS usuario_cadastro,
+
+    tbl_status.nome AS status_bebida
+
+FROM tbl_bebida
+
+INNER JOIN tbl_tipo_bebida
+    ON tbl_bebida.id_tipo_bebida = tbl_tipo_bebida.id
+
+INNER JOIN tbl_usuario
+    ON tbl_bebida.id_usuario = tbl_usuario.id
+
+INNER JOIN tbl_status
+    ON tbl_bebida.id_status = tbl_status.id
+
+LEFT JOIN tbl_categoria_bebida
+    ON tbl_bebida.id = tbl_categoria_bebida.id_bebida
+
+LEFT JOIN tbl_categoria
+    ON tbl_categoria_bebida.id_categoria = tbl_categoria.id
+
+GROUP BY
+    tbl_bebida.id,
+    tbl_bebida.nome,
+    tbl_tipo_bebida.nome,
+    tbl_bebida.preco,
+    tbl_usuario.nome,
+    tbl_status.nome;
+    
+    
+#Ela serve para a landing page, ou seja, a parte que o cliente vê.
+#O cliente não precisa ver bebida inativa ou escondida.
+CREATE VIEW vw_bebidas_ativas AS
+SELECT *
+FROM vw_bebidas_completas
+WHERE status_bebida = 'Ativo';
+    
+#Ela serve para mostrar filtros ou menus no site. 
+#Se uma categoria estiver inativa, ela não aparece para o cliente.   
+CREATE VIEW vw_categorias_ativas AS
+SELECT
+    tbl_categoria.id,
+    tbl_categoria.nome
+FROM tbl_categoria
+INNER JOIN tbl_status
+    ON tbl_categoria.id_status = tbl_status.id
+WHERE tbl_status.nome = 'Ativo';   
+
+
+
+select * from vw_bebidas_completas;   
+select * from vw_bebidas_completas;
+ 
+
+DELIMITER $$
+
+CREATE TRIGGER tg_validar_bebida
+
+BEFORE INSERT
+ON tbl_bebida
+
+FOR EACH ROW
+
+BEGIN
+
+    IF NEW.nome IS NULL OR NEW.nome = '' THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'O nome da bebida é obrigatório';
+    END IF;
+
+    IF NEW.preco <= 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'O preço deve ser maior que zero';
+    END IF;
+
+END$$
+
+DELIMITER ;
+
+
+DELIMITER $$
+
+
+#A Procedure centraliza a consulta das bebidas. Ao executar a CALL
+#sp_listar_bebidas() , o sistema retorna todas as informações da View sem precisar
+#reescrever a consulta SQL
+CREATE PROCEDURE sp_listar_bebidas()
+
+BEGIN
+
+	SELECT *
+    FROM vw_bebidas_completas;
+    
+END$$
+
+DELIMITER ;
+
+CALL sp_listar_bebidas();
+
+
+
+
+
+DELIMITER $$
+
+
+
+-- Criação da Function responsável por calcular
+-- o preço médio de todas as bebidas cadastradas
+CREATE FUNCTION fn_preco_medio_bebidas()
+
+-- A Function retornará um valor decimal
+RETURNS DECIMAL(5,2)
+
+-- Informa ao banco que, para os mesmos dados,
+-- a Function sempre retornará o mesmo resultado
+DETERMINISTIC
+
+BEGIN
+
+    -- Variável que armazenará o resultado da média
+    DECLARE media_preco DECIMAL(5,2);
+
+    -- Calcula a média dos preços da tabela tbl_bebida
+    -- e armazena o resultado na variável media_preco
+    SELECT AVG(preco)
+    INTO media_preco
+    FROM tbl_bebida;
+
+    -- Retorna o valor calculado para quem chamou a Function
+    RETURN media_preco;
+
+END$$
+
+DELIMITER ;
+
+SELECT fn_total_bebidas_ativas();

@@ -16,12 +16,24 @@ const statusController = require('../status/controller_status.js')
 const validarDados = async (categoria) =>{
     let message = JSON.parse(JSON.stringify(config_messages))
 
+    // Validação do Nome (Obrigatório e limite de 50 caracteres)
     if(categoria.nome == undefined || categoria.nome == "" || categoria.nome == null){
-        message.ERROR_BAD_REQUEST.field = "[nome] é obrigatorio e não pode ser vazio"
+        message.ERROR_BAD_REQUEST.field = "[nome] é obrigatório e não pode ser vazio"
         return message.ERROR_BAD_REQUEST
-    }else{
-        return false
+    } else if (categoria.nome.length > 50) {
+        message.ERROR_BAD_REQUEST.field = "[nome] não pode ter mais que 50 caracteres"
+        return message.ERROR_BAD_REQUEST
+    } 
+    
+    // Validação da Descrição (Opcional, mas se vier, valida o limite do VARCHAR(255))
+    if (categoria.descricao != undefined && categoria.descricao != "" && categoria.descricao != null) {
+        if (categoria.descricao.length > 255) {
+            message.ERROR_BAD_REQUEST.field = "[descricao] não pode ter mais que 255 caracteres"
+            return message.ERROR_BAD_REQUEST
+        }
     }
+
+    return false
 }
 
 // Função para inserir uma nova categoria
