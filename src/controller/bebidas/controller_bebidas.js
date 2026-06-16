@@ -14,6 +14,9 @@ const bebidaDAO = require('../../../model/DAO/bebidas/bebidas.js')
 // Import do Controller da Tabela Intermediária para trazer as categorias da bebida!
 const categoriaBebidaController = require('../bebidas/controller_categoria_bebidas.js')
 
+// Import da controller que faz o upload da foto
+const UPLOAD = require('../upload/controller_upload_azure.js')
+
 // Função para validar os dados da bebida
 const validarDados = async (bebida) => {
     let message = JSON.parse(JSON.stringify(config_messages))

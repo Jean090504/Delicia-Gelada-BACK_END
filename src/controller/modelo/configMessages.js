@@ -80,6 +80,12 @@ const ERROR_NOT_FOUND = {
     message:            "Não foi encontrado nenhum dado para retorno!"
 }
 
+const ERROR_UPLOADED_FILE = {
+    status:             false,
+    status_code:        404,
+    message:            "Não foi possível processar a requisição!"
+}
+
 
 
 module.exports = {
@@ -93,5 +99,6 @@ module.exports = {
     ERROR_INTERNAL_SERVER_MODEL,
     ERROR_INTERNAL_SERVER_CONTROLLER,
     ERROR_CONTENT_TYPE,
-    ERROR_NOT_FOUND
+    ERROR_NOT_FOUND,
+    ERROR_UPLOADED_FILE
 }
