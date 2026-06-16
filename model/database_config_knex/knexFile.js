@@ -5,7 +5,7 @@ module.exports = {
       connection: {
         host: 'localhost', // Substitua pelo seu host, se necessário
         user: 'root', // Substitua pelo seu usuário
-        password: 'bcd127', // Substitua pela sua senha
+        password: 'admin' || 'bcd127', // Substitua pela sua senha
         database: 'db_delicia_gelada', // Substitua pelo nome do seu banco de dados
         port: 3306, // Porta padrão do MySQL
        

@@ -13,7 +13,13 @@ use db_delicia_gelada;
  
    create table tbl_tipo_bebida(
 	id	int not null primary key auto_increment,
-    nome varchar(45) not null
+    nome varchar(45) not null,
+    volume VARCHAR(10) NOT NULL,     
+	teor_alcoolico VARCHAR(10) NOT NULL,
+	modo_preparo TEXT NOT NULL,         
+	ingredientes TEXT NOT NULL, 
+	perfil_sabor VARCHAR(50),          
+	dica_delicia VARCHAR(255)
  );
  
     create table tbl_categoria(
