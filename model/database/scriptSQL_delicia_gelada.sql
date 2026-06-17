@@ -1,15 +1,23 @@
 create database db_delicia_gelada;
 use db_delicia_gelada;
 
+show tables;
+
  create table tbl_status(
 	id	int not null primary key auto_increment,
     nome varchar(20) not null
  );
  
+ insert into tbl_status (nome) value ('inativo');
+ select * from tbl_status;
+ 
   create table tbl_cargo(
 	id	int not null primary key auto_increment,
     nome varchar(45) not null
  );
+ 
+  insert into tbl_cargo (nome) value ('administrador');
+ select * from tbl_cargo;
  
    create table tbl_tipo_bebida(
 	id	int not null primary key auto_increment,
@@ -21,6 +29,9 @@ use db_delicia_gelada;
 	perfil_sabor VARCHAR(50),          
 	dica_delicia VARCHAR(255)
  );
+ 
+insert into tbl_tipo_bebida (nome, volume, teor_alcoolico, modo_preparo, ingredientes, perfil_sabor, dica_delicia) value ('batida', '70', '26', 'exemplo', 'fruta', 'doce', 'fe');
+select * from tbl_tipo_bebida;
  
     create table tbl_categoria(
 	id	int not null primary key auto_increment,
@@ -47,6 +58,9 @@ use db_delicia_gelada;
     foreign key (id_cargo)
     references tbl_cargo(id)
  );
+ 
+insert into tbl_usuario (nome, email_corporativo, senha, foto, id_cargo) values ('anderson', 'ander.dev7@gmail.com', '123', 'exemplo', 1);
+select * from tbl_usuario;
  
  
    create table tbl_bebida(

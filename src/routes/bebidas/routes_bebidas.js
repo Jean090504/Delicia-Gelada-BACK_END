@@ -11,16 +11,21 @@ const rota = express.Router()
 // Import do Controller de Bebidas (Ajuste o caminho dos ../ se necessário de acordo com a sua pasta)
 const controllerBebida = require('../../controller/bebidas/controller_bebidas.js')
 
+// Import da controller que faz o upload da imagem
+const { upload } = require('../../controller/config_multer/multer.js')
+
 // Rota para inserir uma nova bebida (POST)
-rota.post('/bebida', async (request, response) => {
+rota.post('/bebida', upload.single('imagem'), async (request, response) => {
     // Pega o Content-Type do cabeçalho
     let contentType = request.headers['content-type']
     
     // Pega os dados enviados no corpo da requisição (JSON)
     let dadosBody = request.body
 
+    let imagem = request.file
+
     // Encaminha para o Controller
-    let dados = await controllerBebida.inserirBebida(dadosBody, contentType)
+    let dados = await controllerBebida.inserirBebida(dadosBody, contentType, imagem)
 
     // Devolve a resposta
     response.status(dados.status_code).json(dados)

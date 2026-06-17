@@ -16,6 +16,7 @@ const categoriaBebidaController = require('../bebidas/controller_categoria_bebid
 
 // Import da controller que faz o upload da foto
 const UPLOAD = require('../upload/controller_upload_azure.js')
+const { application } = require('express')
 
 // Função para validar os dados da bebida
 const validarDados = async (bebida) => {
@@ -30,9 +31,9 @@ const validarDados = async (bebida) => {
     }else if(bebida.preco == undefined || bebida.preco == "" || bebida.preco == null || isNaN(bebida.preco)){
         message.ERROR_BAD_REQUEST.field = "[preco] é obrigatorio e deve ser um número válido"
         return message.ERROR_BAD_REQUEST
-    }else if(bebida.imagem == undefined || bebida.imagem == "" || bebida.imagem == null || bebida.imagem.length > 255){
-        message.ERROR_BAD_REQUEST.field = "[imagem] é obrigatoria e não pode ser vazia"
-        return message.ERROR_BAD_REQUEST
+    // }else if(bebida.imagem == undefined || bebida.imagem == "" || bebida.imagem == null || bebida.imagem.length > 255){
+    //     message.ERROR_BAD_REQUEST.field = "[imagem] é obrigatoria e não pode ser vazia"
+    //     return message.ERROR_BAD_REQUEST
     }else if(bebida.id_tipo_bebida == undefined || bebida.id_tipo_bebida == "" || bebida.id_tipo_bebida == null || isNaN(bebida.id_tipo_bebida)){
         message.ERROR_BAD_REQUEST.field = "[id_tipo_bebida] é obrigatorio e deve ser um número válido"
         return message.ERROR_BAD_REQUEST
@@ -51,20 +52,34 @@ const validarDados = async (bebida) => {
 const inserirBebida = async (bebida, contentType, imagem) => {
     let message = JSON.parse(JSON.stringify(config_messages))
 
+    if(!contentType || !contentType.includes('multipart/form-data')){
+        return message.ERROR_CONTENT_TYPE
+    }
+
     try{
-        // Envia a foto para ser feito o upload do arquivo
-        let urlImagem = await UPLOAD.uploadFiles(imagem)
-        console.log(urlFoto)
-
-        // Adiciona a url do arquivo após o upload
-        bebida.imagem = urlImagem
-        console.log(bebida)
-
         let validar = await validarDados(bebida)
 
         if(validar){
             return validar
-        } else {
+        }
+
+        if(!imagem){
+            message.ERROR_BAD_REQUEST.field = "[imagem] é obrigatoria e não pode ser vazia"
+            return message.ERROR_BAD_REQUEST
+        }
+
+        // Envia a foto para ser feito o upload do arquivo
+        let urlImagem = await UPLOAD.uploadFiles(imagem)
+        console.log(urlImagem)
+
+        if(!urlImagem){
+            return message.ERROR_UPLOADED_FILE
+        }
+
+        // Adiciona a url do arquivo após o upload
+        bebida.imagem = urlImagem
+        console.log(bebida)
+        
             let result = await bebidaDAO.inserirBebida(bebida) 
 
             if(result){
@@ -78,10 +93,7 @@ const inserirBebida = async (bebida, contentType, imagem) => {
                 return message.ERROR_INTERNAL_SERVER_MODEL
             }
             return message.DEFAULT_MESSAGE
-        }
-        // }else{
-        //     return message.ERROR_CONTENT_TYPE
-        // }
+
     }catch (error) {
         console.log(error)
         return message.ERROR_INTERNAL_SERVER_CONTROLLER
