@@ -48,33 +48,40 @@ const validarDados = async (bebida) => {
 }
 
 // Função para inserir uma nova bebida
-const inserirBebida = async (bebida, contentType) => {
+const inserirBebida = async (bebida, contentType, imagem) => {
     let message = JSON.parse(JSON.stringify(config_messages))
 
     try{
-        if (String(contentType).toLowerCase() == 'application/json') {
-            let validar = await validarDados(bebida)
+        // Envia a foto para ser feito o upload do arquivo
+        let urlImagem = await UPLOAD.uploadFiles(imagem)
+        console.log(urlFoto)
 
-            if(validar){
-                return validar
-            } else {
-                let result = await bebidaDAO.inserirBebida(bebida) 
+        // Adiciona a url do arquivo após o upload
+        bebida.imagem = urlImagem
+        console.log(bebida)
 
-                if(result){
-                    bebida.id = result
-                    message.DEFAULT_MESSAGE.status = message.SUCCESS_CREATED_ITEM.status
-                    message.DEFAULT_MESSAGE.status_code = message.SUCCESS_CREATED_ITEM.status_code
-                    message.DEFAULT_MESSAGE.message = message.SUCCESS_CREATED_ITEM.message
-                    message.DEFAULT_MESSAGE.response = bebida
-                }
-                else {
-                    return message.ERROR_INTERNAL_SERVER_MODEL
-                }
-                return message.DEFAULT_MESSAGE
+        let validar = await validarDados(bebida)
+
+        if(validar){
+            return validar
+        } else {
+            let result = await bebidaDAO.inserirBebida(bebida) 
+
+            if(result){
+                bebida.id = result
+                message.DEFAULT_MESSAGE.status = message.SUCCESS_CREATED_ITEM.status
+                message.DEFAULT_MESSAGE.status_code = message.SUCCESS_CREATED_ITEM.status_code
+                message.DEFAULT_MESSAGE.message = message.SUCCESS_CREATED_ITEM.message
+                message.DEFAULT_MESSAGE.response = bebida
             }
-        }else{
-            return message.ERROR_CONTENT_TYPE
+            else {
+                return message.ERROR_INTERNAL_SERVER_MODEL
+            }
+            return message.DEFAULT_MESSAGE
         }
+        // }else{
+        //     return message.ERROR_CONTENT_TYPE
+        // }
     }catch (error) {
         console.log(error)
         return message.ERROR_INTERNAL_SERVER_CONTROLLER

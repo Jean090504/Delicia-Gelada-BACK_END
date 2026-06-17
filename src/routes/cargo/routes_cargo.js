@@ -63,7 +63,7 @@ rota.put('/cargo/:id', bodyParserJSON, async (request, response) => {
     let dados = request.body
     let conteType = request.headers['content-type']
 
-    let result = await controllerNacionalidade.atualizarCargo(id, dados, conteType)
+    let result = await controllerCargo.atualizarCargo(id, dados, conteType)
 
     response.status(result.status_code)
     response.json(result)
