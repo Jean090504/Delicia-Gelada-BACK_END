@@ -25,6 +25,8 @@ use db_delicia_gelada;
     create table tbl_categoria(
 	id	int not null primary key auto_increment,
     nome varchar(50) not null,
+    descricao varchar(255) null,
+    foto varchar(255) not null,
     id_status int not null,
     
     constraint FK_STATUS_CATEGORIA
@@ -89,25 +91,6 @@ SELECT bebida.* FROM tbl_bebida AS bebida
 INNER JOIN tbl_categoria_bebida AS categoria_bebida ON bebida.id = categoria_bebida.id_bebida
 INNER JOIN tbl_categoria AS categoria ON categoria_bebida.id_categoria = categoria.id
 WHERE categoria.nome = 'NÃO ALCOÓLICO';
-
-select * from vw_bebidas_nao_alcoolicas;
-select * from tbl_bebida;
-
-SELECT email_corporativo FROM tbl_usuario;
-
-select  * from tbl_usuario;
-
-ALTER TABLE tbl_categoria 
-ADD COLUMN descricao VARCHAR(255) NULL;
-
-select * from tbl_categoria;
-
-INSERT INTO tbl_bebida (nome, descricao, preco, imagem, id_tipo_bebida, id_usuario, id_status)
-VALUES ('Coca-Cola', 'Refrigerante em lata 350ml', 5.50, 'https://meuservidor.com.br/coca.jpg', 1, 1, 1);
-
-INSERT INTO tbl_categoria_bebida (id_categoria, id_bebida) 
-VALUES (3, 1);
-
 
 
 -- Views

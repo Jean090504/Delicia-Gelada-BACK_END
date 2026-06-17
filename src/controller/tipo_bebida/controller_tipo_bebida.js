@@ -12,14 +12,52 @@ const config_messages = require('../modelo/configMessages.js')
 const tipoBebidaDAO = require('../../../model/DAO/tipo_bebida/tipo_bebida.js')
 
 // Função para validar os dados do tipo de bebida
-const validarDados = async (tipoBebida) =>{
+const validarDados = async (tipoBebida) => {
     let message = JSON.parse(JSON.stringify(config_messages))
 
-    if(tipoBebida.nome == undefined || tipoBebida.nome == "" || tipoBebida.nome == null || tipoBebida.nome.length > 45){
-        message.ERROR_BAD_REQUEST.field = "[nome] invalido"
+    // Validação do NOME (Obrigatório, máx 45)
+    if (!tipoBebida.nome || tipoBebida.nome == "" || tipoBebida.nome.length > 45) {
+        message.ERROR_BAD_REQUEST.field = "[nome] inválido ou excede 45 caracteres."
         return message.ERROR_BAD_REQUEST
     }
     
+    // Validação do VOLUME (Obrigatório, máx 10)
+    if (!tipoBebida.volume || tipoBebida.volume == "" || tipoBebida.volume.length > 10) {
+        message.ERROR_BAD_REQUEST.field = "[volume] inválido ou excede 10 caracteres."
+        return message.ERROR_BAD_REQUEST
+    }
+
+    // Validação do TEOR ALCOÓLICO (Obrigatório, máx 10)
+    if (!tipoBebida.teor_alcoolico || tipoBebida.teor_alcoolico == "" || tipoBebida.teor_alcoolico.length > 10) {
+        message.ERROR_BAD_REQUEST.field = "[teor_alcoolico] inválido ou excede 10 caracteres."
+        return message.ERROR_BAD_REQUEST
+    }
+
+    // Validação do MODO DE PREPARO (Obrigatório, TEXT)
+    if (!tipoBebida.modo_preparo || tipoBebida.modo_preparo == "") {
+        message.ERROR_BAD_REQUEST.field = "[modo_preparo] é obrigatório."
+        return message.ERROR_BAD_REQUEST
+    }
+
+    // Validação dos INGREDIENTES (Obrigatório, TEXT)
+    if (!tipoBebida.ingredientes || tipoBebida.ingredientes == "") {
+        message.ERROR_BAD_REQUEST.field = "[ingredientes] são obrigatórios."
+        return message.ERROR_BAD_REQUEST
+    }
+
+    // Validação do PERFIL DE SABOR (Opcional, mas se enviado, máx 50)
+    if (tipoBebida.perfil_sabor && tipoBebida.perfil_sabor.length > 50) {
+        message.ERROR_BAD_REQUEST.field = "[perfil_sabor] excede 50 caracteres."
+        return message.ERROR_BAD_REQUEST
+    }
+
+    // Validação da DICA DELÍCIA (Opcional, mas se enviada, máx 255)
+    if (tipoBebida.dica_delicia && tipoBebida.dica_delicia.length > 255) {
+        message.ERROR_BAD_REQUEST.field = "[dica_delicia] excede 255 caracteres."
+        return message.ERROR_BAD_REQUEST
+    }
+    
+    // Se passar por todos os ifs, os dados estão corretos
     return false
 }
 

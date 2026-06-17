@@ -306,7 +306,7 @@ paths:
           description: successful operation
 
   # ==========================================
-  # BEBIDA (Antigo Produto)
+  # BEBIDA
   # ==========================================
   /v1/fynix/deliciagelada/bebida:
     post:
@@ -671,9 +671,19 @@ components:
       type: object
       required:
         - nome
+        - volume
+        - teor_alcoolico
+        - modo_preparo
+        - ingredientes
       properties:
         id: {type: integer, format: int64}
         nome: {type: string}
+        volume: {type: string}
+        teor_alcoolico: {type: string}
+        modo_preparo: {type: string}
+        ingredientes: {type: string}
+        perfil_sabor: {type: string}
+        dica_delicia: {type: string}
 
     Bebida:
       type: object
@@ -699,10 +709,13 @@ components:
       type: object
       required:
         - nome
+        - foto
         - id_status
       properties:
         id: {type: integer, format: int64}
         nome: {type: string}
+        descricao: {type: string}
+        foto: {type: string}
         id_status: {type: integer, format: int64}
 
     CategoriaBebida:

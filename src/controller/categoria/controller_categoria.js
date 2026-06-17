@@ -2,17 +2,14 @@
  * Objetivo: Arquivo responsável pelo controle de dados do projeto Delicia Gelada - CRUD de Categorias
  * Data: 09/06/2026
  * Autor: Jean Costa
- * Versão 1.0
+ * Versão 1.1 (Validando o campo Foto e ID_Status)
  ********************************************************************************************************************************************/
 
-//Import do arquivo de padrões de mensagens para manter o código mais organizado e facilitar a manutenção
 const config_messages = require('../modelo/configMessages.js')
-
-//Import do arquivo de DAO para manipular os dados no banco de dados
 const categoriaDAO = require('../../../model/DAO/categoria/categoria.js')
 const statusController = require('../status/controller_status.js')
 
-// Função para validar os dados da categoris
+// Função para validar os dados da categoria
 const validarDados = async (categoria) =>{
     let message = JSON.parse(JSON.stringify(config_messages))
 
@@ -24,6 +21,21 @@ const validarDados = async (categoria) =>{
         message.ERROR_BAD_REQUEST.field = "[nome] não pode ter mais que 50 caracteres"
         return message.ERROR_BAD_REQUEST
     } 
+    
+    // Validação da Foto (Obrigatório e limite de 255 caracteres)
+    if(categoria.foto == undefined || categoria.foto == "" || categoria.foto == null){
+        message.ERROR_BAD_REQUEST.field = "[foto] é obrigatória e não pode ser vazia"
+        return message.ERROR_BAD_REQUEST
+    } else if (categoria.foto.length > 255) {
+        message.ERROR_BAD_REQUEST.field = "[foto] não pode ter mais que 255 caracteres"
+        return message.ERROR_BAD_REQUEST
+    } 
+
+    // Validação do Status (Obrigatório, pois é Foreign Key)
+    if(categoria.id_status == undefined || categoria.id_status == "" || categoria.id_status == null || isNaN(categoria.id_status)){
+        message.ERROR_BAD_REQUEST.field = "[id_status] é obrigatório e deve ser um número válido"
+        return message.ERROR_BAD_REQUEST
+    }
     
     // Validação da Descrição (Opcional, mas se vier, valida o limite do VARCHAR(255))
     if (categoria.descricao != undefined && categoria.descricao != "" && categoria.descricao != null) {
@@ -170,7 +182,6 @@ const deleteCategoriaById = async (id) => {
     try {
         let validaBuscaID = await buscarCategoriaById(id)
 
-        // Ele só vai ler o .status se a variável validaBuscaID realmente existir!
         if(validaBuscaID && validaBuscaID.status){
             
             let result = await categoriaDAO.deleteCategoria(id)
@@ -182,11 +193,9 @@ const deleteCategoriaById = async (id) => {
             }
 
         } else {
-            // Se validaBuscaID for undefined, devolvemos um erro padrão 404 seguro.
             if (validaBuscaID) {
                 return validaBuscaID
             } else {
-                // Caso a sua mensagem no config seja apenas ERROR_NOT_FOUND, ajuste abaixo:
                 message.ERROR_BAD_REQUEST.field = "[ID] não encontrado"
                 return message.ERROR_BAD_REQUEST 
             }
