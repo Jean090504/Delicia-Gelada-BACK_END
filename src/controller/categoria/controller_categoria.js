@@ -8,6 +8,7 @@
 const config_messages = require('../modelo/configMessages.js')
 const categoriaDAO = require('../../../model/DAO/categoria/categoria.js')
 const statusController = require('../status/controller_status.js')
+const azureUpload = require('../../controller/upload/controller_upload_azure.js')
 
 // Função para validar os dados da categoria
 const validarDados = async (categoria) =>{
@@ -49,11 +50,23 @@ const validarDados = async (categoria) =>{
 }
 
 // Função para inserir uma nova categoria
-const inserirCategoria = async (categoria, contentType) => {
+const inserirCategoria = async (categoria, contentType, file) => {
     let message = JSON.parse(JSON.stringify(config_messages))
 
     try{
-        if (String(contentType).toLowerCase() == 'application/json') {
+        if (String(contentType).toLowerCase().includes('multipart/form-data')) {
+
+            // 1. Se o arquivo da foto chegou, faz o upload para a Azure
+            if(file){
+                let urlFoto = await azureUpload.uploadFoto(file)
+
+                if(urlFoto) {
+                    categoria.foto = urlFoto // Injeta a URL segura no objeto da categoria
+                } else {
+                    return message.ERROR_INTERNAL_SERVER_MODEL // Falhou ao subir pra nuvem
+                }
+            }
+
             let validar = await validarDados(categoria)
 
             if(validar){

@@ -10,20 +10,23 @@ const express = require('express')
 const rota = express.Router()
 const controllerCategoria = require('../../controller/categoria/controller_categoria.js')
 const bodyParser = require('body-parser')
+const { upload } = require('../../controller/config_multer/multer.js')
 
 //Criando um objeto para manipular dados do body da API em formato JSON
 const bodyParserJSON = bodyParser.json()
 
 // Rota para inserir uma nova categoria
-rota.post('/categoria', bodyParserJSON, async (request, response) => {
+rota.post('/categoria', upload.single('foto'), bodyParserJSON, async (request, response) => {
     // recebe o conteudo dentro do body da requisição
     let dados = request.body
     let conteType = request.headers['content-type']// linha adicionada para receber o content-type do header da requisição
 
-    let result = await controllerCategoria.inserirCategoria(dados,conteType)
+    // O arquivo físico da imagem vai para o request.file
+    let arquivoFoto = request.file
+
+    let result = await controllerCategoria.inserirCategoria(dados,conteType, arquivoFoto)
     
-    response.status(result.status_code)
-    response.json(result)
+    response.status(result.status_code).json(result)
 })
 
 // Rota para atualizar uma categoria existente
