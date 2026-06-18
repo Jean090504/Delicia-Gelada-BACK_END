@@ -1,44 +1,31 @@
 create database db_delicia_gelada;
 use db_delicia_gelada;
 
-show tables;
-
-select * from tbl_cargo;
-select * from tbl_tipo_bebida;
-select * from tbl_usuario;
-
- create table tbl_status(
-	id	int not null primary key auto_increment,
+-- 1. CRIAÇÃO DAS TABELAS SEM CHAVE ESTRANGEIRA
+create table tbl_status(
+    id int not null primary key auto_increment,
     nome varchar(20) not null
- );
- 
- insert into tbl_status (nome) value ('inativo');
- select * from tbl_status;
- 
-  create table tbl_cargo(
-	id	int not null primary key auto_increment,
+);
+
+create table tbl_cargo(
+    id int not null primary key auto_increment,
     nome varchar(45) not null
- );
- 
-  insert into tbl_cargo (nome) value ('administrador');
- select * from tbl_cargo;
- 
-   create table tbl_tipo_bebida(
-	id	int not null primary key auto_increment,
+);
+
+create table tbl_tipo_bebida(
+    id int not null primary key auto_increment,
     nome varchar(45) not null,
     volume VARCHAR(10) NOT NULL,     
-	teor_alcoolico VARCHAR(10) NOT NULL,
-	modo_preparo TEXT NOT NULL,         
-	ingredientes TEXT NOT NULL, 
-	perfil_sabor VARCHAR(50),          
-	dica_delicia VARCHAR(255)
- );
- 
-insert into tbl_tipo_bebida (nome, volume, teor_alcoolico, modo_preparo, ingredientes, perfil_sabor, dica_delicia) value ('batida', '70', '26', 'exemplo', 'fruta', 'doce', 'fe');
-select * from tbl_tipo_bebida;
- 
-    create table tbl_categoria(
-	id	int not null primary key auto_increment,
+    teor_alcoolico VARCHAR(10) NOT NULL,
+    modo_preparo TEXT NOT NULL,         
+    ingredientes TEXT NOT NULL, 
+    perfil_sabor VARCHAR(50),          
+    dica_delicia VARCHAR(255)
+);
+
+-- 2. CRIAÇÃO DAS TABELAS COM CHAVE ESTRANGEIRA
+create table tbl_categoria(
+    id int not null primary key auto_increment,
     nome varchar(50) not null,
     descricao varchar(255) null,
     foto varchar(255) not null,
@@ -47,28 +34,23 @@ select * from tbl_tipo_bebida;
     constraint FK_STATUS_CATEGORIA
     foreign key (id_status)
     references tbl_status(id)
- );
- 
- 
-    create table tbl_usuario(
-	id	int not null primary key auto_increment,
+);
+
+create table tbl_usuario(
+    id int not null primary key auto_increment,
     nome varchar(80) not null,
     email_corporativo varchar(255) not null,
     senha varchar(512) not null,
     foto varchar(255) not null,
-	id_cargo int not null,
+    id_cargo int not null,
     
     constraint FK_CARGO_USUARIO
     foreign key (id_cargo)
     references tbl_cargo(id)
- );
- 
-insert into tbl_usuario (nome, email_corporativo, senha, foto, id_cargo) values ('anderson', 'ander.dev7@gmail.com', '123', 'exemplo', 1);
-select * from tbl_usuario;
- 
- 
-   create table tbl_bebida(
-	id	int not null primary key auto_increment,
+);
+
+create table tbl_bebida(
+    id int not null primary key auto_increment,
     nome varchar(80) not null,
     descricao text not null,
     preco decimal(5,2) not null,
@@ -81,16 +63,16 @@ select * from tbl_usuario;
     foreign key (id_tipo_bebida)
     references tbl_tipo_bebida(id),
     
-	constraint FK_USUARIO_BEBIDA
+    constraint FK_USUARIO_BEBIDA
     foreign key (id_usuario)
     references tbl_usuario(id),
     
-	constraint FK_STATUS_BEBIDA
+    constraint FK_STATUS_BEBIDA
     foreign key (id_status)
     references tbl_status(id)    
- );
- 
- create table tbl_categoria_bebida(
+);
+
+create table tbl_categoria_bebida(
     id int not null primary key auto_increment,
     id_categoria int not null,
     id_bebida int not null,
@@ -103,6 +85,47 @@ select * from tbl_usuario;
     foreign key (id_bebida)
     references tbl_bebida(id)
 );
+
+-- 3. INSERÇÃO DE DADOS (Corrigidos)
+insert into tbl_status (nome) values ('inativo'), ('ativo');
+
+insert into tbl_cargo (nome) values ('Admin'), ('Repositor'), ('Atendente'), ('Gerente');
+
+insert into tbl_tipo_bebida (nome, volume, teor_alcoolico, modo_preparo, ingredientes, perfil_sabor, dica_delicia) 
+values ('Batida', '70', '26', 'exemplo', 'fruta', 'doce', 'fe');
+
+-- Adicionei uma URL de imagem genérica para não quebrar a quantidade de colunas
+insert into tbl_usuario (nome, email_corporativo, senha, foto, id_cargo) 
+values ('José Almeida', 'jose.almeida@deliciagelada.com', '1234', 'https://linkdafoto.com/foto.jpg', 4);
+
+-- 4. TRIGGERS
+DELIMITER $$
+
+CREATE TRIGGER tg_validar_bebida
+BEFORE INSERT
+ON tbl_bebida
+FOR EACH ROW
+BEGIN
+    IF NEW.nome IS NULL OR NEW.nome = '' THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'O nome da bebida é obrigatório';
+    END IF;
+
+    IF NEW.preco <= 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'O preço deve ser maior que zero';
+    END IF;
+END$$
+
+DELIMITER ;
+
+-- 5. VALIDAÇÃO FINAL (Esses selects agora vão funcionar!)
+show tables;
+select * from tbl_cargo;
+select * from tbl_tipo_bebida;
+select * from tbl_usuario;
+select * from tbl_status;
+ 
  
 CREATE VIEW vw_bebidas_nao_alcoolicas AS
 SELECT bebida.* FROM tbl_bebida AS bebida
@@ -176,34 +199,6 @@ WHERE tbl_status.nome = 'Ativo';
 select * from vw_bebidas_completas;   
 select * from vw_bebidas_completas;
  
-
-DELIMITER $$
-
-CREATE TRIGGER tg_validar_bebida
-
-BEFORE INSERT
-ON tbl_bebida
-
-FOR EACH ROW
-
-BEGIN
-
-    IF NEW.nome IS NULL OR NEW.nome = '' THEN
-        SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'O nome da bebida é obrigatório';
-    END IF;
-
-    IF NEW.preco <= 0 THEN
-        SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'O preço deve ser maior que zero';
-    END IF;
-
-END$$
-
-DELIMITER ;
-
-
-DELIMITER $$
 
 
 #A Procedure centraliza a consulta das bebidas. Ao executar a CALL
