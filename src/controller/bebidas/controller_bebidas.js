@@ -100,8 +100,8 @@ const inserirBebida = async (bebida, contentType, imagem) => {
     }
 }
 
-// A função agora recebe 'headers' para verificar o Age Gate
-const listarBebidas = async (headers) => {
+// A função agora recebe os 'parametros' passados na URL
+const listarBebidas = async (parametros) => {
     let message = JSON.parse(JSON.stringify(config_messages))
 
     try {
@@ -118,17 +118,25 @@ const listarBebidas = async (headers) => {
                 }
             }
             
-            // Verifica o header de verificação de idade
-            // Se o usuário NÃO for maior (não enviou o header), aplicamos o filtro.
-            const ehMaiorDe18 = headers['x-age-verified'] === 'true';
+            // Lê o parâmetro da URL. Se a URL tiver "?maior_de_18=true", libera tudo.
+            const ehMaiorDe18 = parametros && parametros.maior_de_18 === 'true';
 
             let bebidasFiltradas = result;
 
+            // Se NÃO tiver o parâmetro ou for falso, aplica o filtro de menores de idade
             if (!ehMaiorDe18) {
                 bebidasFiltradas = result.filter(bebida => {
-                    // Mantém apenas bebidas que NÃO tenham a categoria "NÃO ALCOÓLICO" (Lógica inversa)
-                    // Na verdade, para restringir, mantemos apenas o que é NÃO ALCOÓLICO
-                    return bebida.categorias.some(cat => cat.nome.toUpperCase() === "NÃO ALCOÓLICO");
+                    // Restringe para mostrar APENAS bebidas com teor alcoólico 0%
+                    if (bebida.teor_alcoolico) {
+                        return bebida.teor_alcoolico === '0%' || bebida.teor_alcoolico === '0';
+                    }
+                    
+                    // Se a sua view do banco não trouxer o teor, ele tenta barrar pelo nome do tipo
+                    if (bebida.tipo_bebida) {
+                        return bebida.tipo_bebida.toUpperCase().includes("NÃO ALCOÓLICO") || 
+                               bebida.tipo_bebida.toUpperCase().includes("SEM ÁLCOOL");
+                    }
+                    return false;
                 })
             }
             

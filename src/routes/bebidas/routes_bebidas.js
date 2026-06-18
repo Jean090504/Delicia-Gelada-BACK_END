@@ -33,7 +33,10 @@ rota.post('/bebida', upload.single('imagem'), async (request, response) => {
 
 // Rota para listar todas as bebidas (GET)
 rota.get('/bebida', async (request, response) => {
-    let dados = await controllerBebida.listarBebidas(request.headers)
+    // Pegamos os parâmetros digitados na URL (ex: ?maior_de_18=true)
+    let parametros = request.query
+    
+    let dados = await controllerBebida.listarBebidas(parametros)
     response.status(dados.status_code).json(dados)
 })
 

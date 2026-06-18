@@ -57,11 +57,11 @@ const inserirCategoria = async (categoria, contentType, file) => {
         if (String(contentType).toLowerCase().includes('multipart/form-data')) {
 
             // 1. Se o arquivo da foto chegou, faz o upload para a Azure
-            if(file){
-                let urlFoto = await azureUpload.uploadFoto(file)
-
-                if(urlFoto) {
-                    categoria.foto = urlFoto // Injeta a URL segura no objeto da categoria
+            if (file) {
+                let urlFotoAzure = await azureUpload.uploadFiles(file)
+                
+                if (urlFotoAzure) {
+                    categoria.foto = urlFotoAzure // Injeta a URL segura no objeto do usuário
                 } else {
                     return message.ERROR_INTERNAL_SERVER_MODEL // Falhou ao subir pra nuvem
                 }
@@ -166,7 +166,7 @@ const buscarCategoriaById = async (id) => {
                 let resultStatus = await statusController.buscarStatusById(categoria.id_status)
 
                 // Se encontrar o status, adiciona no JSON e remove o id_status original
-                if(resultStatus.status){
+                if(resultStatus && resultStatus.status){
                     let dadosStatus = resultStatus.response[0] || resultStatus.response;
                     categoria.status_categoria = dadosStatus.nome;
                     delete categoria.id_status;
@@ -175,19 +175,19 @@ const buscarCategoriaById = async (id) => {
                 message.DEFAULT_MESSAGE.status = message.SUCCESS_RESPONSE.status
                 message.DEFAULT_MESSAGE.status_code = message.SUCCESS_RESPONSE.status_code
                 message.DEFAULT_MESSAGE.message = message.SUCCESS_RESPONSE.message
-                message.DEFAULT_MESSAGE.response = result
+                // Devolve a categoria tratada (não o result bruto)
+                message.DEFAULT_MESSAGE.response = categoria 
             }
             else {
                 return message.ERROR_NOT_FOUND_ITEM
             }
             return message.DEFAULT_MESSAGE
         } catch (error) {
-            console.log(error)
+            console.log("Erro no buscarCategoriaById:", error)
             return message.ERROR_INTERNAL_SERVER_MODEL
         }
     }
 }
-
 // Função para deletar uma categoria específica pelo ID
 const deleteCategoriaById = async (id) => {
     let message = JSON.parse(JSON.stringify(config_messages))
