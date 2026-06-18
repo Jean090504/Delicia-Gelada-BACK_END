@@ -3,6 +3,10 @@ use db_delicia_gelada;
 
 show tables;
 
+select * from tbl_cargo;
+select * from tbl_tipo_bebida;
+select * from tbl_usuario;
+
  create table tbl_status(
 	id	int not null primary key auto_increment,
     nome varchar(20) not null

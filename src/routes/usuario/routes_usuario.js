@@ -12,20 +12,27 @@ const controllerUsuario = require('../../controller/usuario/controller_usuario.j
 const controllerLogin = require('../../controller/autenticacao/controller_autenticacao_usuario.js')
 const bodyParser = require('body-parser')
 const { validarToken } = require('../../middleware/jwt.js')
+const { upload } = require('../../controller/config_multer/multer.js')
 
 //Criando um objeto para manipular dados do body da API em formato JSON
 const bodyParserJSON = bodyParser.json()
 
-// Rota para inserir um novo usuário
-rota.post('/usuario', bodyParserJSON, async (request, response) => {
-    // recebe o conteudo dentro do body da requisição
-    let dados = request.body
-    let conteType = request.headers['content-type']// linha adicionada para receber o content-type do header da requisição
 
-    let result = await controllerUsuario.inserirUsuario(dados,conteType)
+// Rota de cadastro com Multer
+rota.post('/usuario', upload.single('foto'), async (request, response) => {
+    // Quando usamos Multer, o Content-Type se torna 'multipart/form-data'
+    let contentType = request.headers['content-type']
     
-    response.status(result.status_code)
-    response.json(result)
+    // Os campos de texto vão para o request.body
+    let dadosBody = request.body
+
+    // O arquivo físico da imagem vai para o request.file
+    let arquivoFoto = request.file
+
+    // Encaminha tudo para o Controller (adicionando o parâmetro do arquivo)
+    let dados = await controllerUsuario.inserirUsuario(dadosBody, contentType, arquivoFoto)
+
+    response.status(dados.status_code).json(dados)
 })
 
 // Rota para listar todas os usuários

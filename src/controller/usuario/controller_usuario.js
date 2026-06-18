@@ -12,6 +12,8 @@ const config_messages = require('../modelo/configMessages.js')
 const usuarioDAO = require('../../../model/DAO/usuario/usuario.js') 
 const cargoController = require('../cargo/controller_cargo.js')
 
+const azureUpload = require('../../controller/upload/controller_upload_azure.js')
+
 // Função para validar os dados do usuário
 const validarDados = async (usuario) =>{
     let message = JSON.parse(JSON.stringify(config_messages))
@@ -49,34 +51,50 @@ const validarDados = async (usuario) =>{
 }
 
 // Função para inserir um novo usuário
-const inserirUsuario = async (usuario, contentType) => {
+const inserirUsuario = async (usuario, contentType, file) => {
     let message = JSON.parse(JSON.stringify(config_messages))
 
-    try{
-        if (String(contentType).toLowerCase() == 'application/json') {
+    try {
+        // Agora aceitamos multipart/form-data por causa do Multer
+        if (String(contentType).toLowerCase().includes('multipart/form-data')) {
+            
+            // 1. Se o arquivo da foto chegou, faz o upload para a Azure
+            if (file) {
+                let urlFotoAzure = await azureUpload.uploadFiles(file)
+                
+                if (urlFotoAzure) {
+                    usuario.foto = urlFotoAzure // Injeta a URL segura no objeto do usuário
+                } else {
+                    return message.ERROR_INTERNAL_SERVER_MODEL // Falhou ao subir pra nuvem
+                }
+            }
+
+            console.log("📦 PACOTE QUE CHEGOU DO FRONTEND:", usuario)
+
+            // 2. Valida os dados (agora com a URL da foto já preenchida)
             let validar = await validarDados(usuario)
 
-            if(validar){
+            if (validar) {
                 return validar
             } else {
+                // 3. Salva no banco de dados
                 let result = await usuarioDAO.inserirUsuario(usuario) 
 
-                if(result){
+                if (result) {
                     usuario.id = result
                     message.DEFAULT_MESSAGE.status = message.SUCCESS_CREATED_ITEM.status
                     message.DEFAULT_MESSAGE.status_code = message.SUCCESS_CREATED_ITEM.status_code
                     message.DEFAULT_MESSAGE.message = message.SUCCESS_CREATED_ITEM.message
                     message.DEFAULT_MESSAGE.response = usuario
-                }
-                else {
+                } else {
                     return message.ERROR_INTERNAL_SERVER_MODEL
                 }
                 return message.DEFAULT_MESSAGE
             }
-        }else{
+        } else {
             return message.ERROR_INVALID_CONTENT_TYPE
         }
-    }catch (error) {
+    } catch (error) {
         console.log(error)
         return message.ERROR_INTERNAL_SERVER_MODEL
     }
@@ -133,17 +151,17 @@ const buscarUsuarioById = async (id) => {
 
         if(result){
             // Se o retorno do DAO for array, pega a posição [0] para não quebrar a lógica abaixo
-            let usuario = Array.isArray(result) ? result[0] : result;
+            let usuario = Array.isArray(result) ? result[0] : result
 
-            // CORRIGIDO: Busca usando id_cargo
+            // Busca usando id_cargo
             let resultCargo = await cargoController.buscarCargoById(usuario.id_cargo)
 
             if(resultCargo.status){
-                let dadosCargo = resultCargo.response[0] || resultCargo.response;
-                usuario.cargo = dadosCargo.nome; 
+                // Ajuste para pegar o nome do cargo corretamente, independente da estrutura
+                let dadosCargo = resultCargo.response.nome ? resultCargo.response : resultCargo.response[0]
+                usuario.cargo = dadosCargo.nome
                 
-                // CORRIGIDO: Deleta o id_cargo
-                delete usuario.id_cargo; 
+                delete usuario.id_cargo
             }
 
             message.DEFAULT_MESSAGE.status = message.SUCCESS_RESPONSE.status 
