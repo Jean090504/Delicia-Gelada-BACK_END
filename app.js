@@ -5,22 +5,14 @@
  * Versão 1.0
  ********************************************************************************************************************************************/
 
-const express = require('express')
+O erro é que o Express 5 não aceita '*' no app.options. Troque por '/{*path}':
+jsconst express = require('express')
 const cors = require('cors')
 const helmet = require('helmet')
 
 const app = express()
 
 app.use(express.json())
-
-//  Preflight antes de tudo
-app.options('*', (req, res) => {
-    res.header('Access-Control-Allow-Origin', req.headers.origin || '*')
-    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization')
-    res.header('Access-Control-Allow-Credentials', 'true')
-    res.sendStatus(200)
-})
 
 const corsOptions = {
     origin: function(origin, callback) {
@@ -32,9 +24,12 @@ const corsOptions = {
 }
 
 app.use(cors(corsOptions))
+
+// ✅ Express 5 usa /{*path} em vez de *
+app.options('/{*path}', cors(corsOptions))
+
 app.use(helmet({ crossOriginResourcePolicy: false }))
 
-//  Importação das rotas
 const cargoRotas = require('./src/routes/cargo/routes_cargo.js')
 const tipoBebidaRotas = require('./src/routes/tipo_bebida/routes_tipo_bebida.js')
 const statusRotas = require('./src/routes/status/routes_status.js')
