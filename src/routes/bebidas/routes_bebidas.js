@@ -36,10 +36,16 @@ rota.get('/bebida', async (request, response) => {
     // Pegamos os parâmetros digitados na URL (ex: ?maior_de_18=true)
     let parametros = request.query
     
+    // PROTEÇÃO PARA O PAINEL ADMINISTRATIVO:
+    // Se a requisição tiver um Token no header (ou seja, é o Admin logado),
+    // forçamos o parâmetro para 'true' para o admin ver e editar o catálogo completo
+    if (request.headers['authorization']) {
+        parametros.maior_de_18 = 'true'
+    }
+
     let dados = await controllerBebida.listarBebidas(parametros)
     response.status(dados.status_code).json(dados)
 })
-
 // Rota para buscar uma bebida específica pelo ID (GET)
 rota.get('/bebida/:id', async (request, response) => {
     // Pega o ID da URL

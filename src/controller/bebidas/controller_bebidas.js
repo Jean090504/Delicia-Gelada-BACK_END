@@ -123,20 +123,18 @@ const listarBebidas = async (parametros) => {
 
             let bebidasFiltradas = result;
 
-            // Se NÃO tiver o parâmetro ou for falso, aplica o filtro de menores de idade
+            // Se NÃO for maior de 18, filtramos
             if (!ehMaiorDe18) {
                 bebidasFiltradas = result.filter(bebida => {
-                    // Restringe para mostrar APENAS bebidas com teor alcoólico 0%
-                    if (bebida.teor_alcoolico) {
-                        return bebida.teor_alcoolico === '0%' || bebida.teor_alcoolico === '0';
-                    }
+                    // A lógica agora é: a bebida só aparece se ela tiver 
+                    // explicitamente a categoria "Não alcoólicos" (ID 7)
+                    // OU se o seu tipo de bebida não for alcoólico.
                     
-                    // Se a sua view do banco não trouxer o teor, ele tenta barrar pelo nome do tipo
-                    if (bebida.tipo_bebida) {
-                        return bebida.tipo_bebida.toUpperCase().includes("NÃO ALCOÓLICO") || 
-                               bebida.tipo_bebida.toUpperCase().includes("SEM ÁLCOOL");
-                    }
-                    return false;
+                    const temCategoriaNaoAlcoolica = bebida.categorias.some(cat => 
+                        cat.id === 7 || cat.nome.toLowerCase().includes("não alcoólico")
+                    )
+                    
+                    return temCategoriaNaoAlcoolica;
                 })
             }
             

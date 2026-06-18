@@ -37,13 +37,14 @@ async function inserirBebida(dadosBebida) {
     }
 }
 
-// Função para listar todas as bebidas
 async function listarBebidas() {
     try {
-        let sql = 'select * from tbl_bebida order by id desc'
+        // Agora consultamos a VIEW que possui todos os dados unidos
+        let sql = 'SELECT * FROM view_detalhes_bebida ORDER BY id DESC'
         let result = await knexConex.raw(sql)
 
-        if(Array.isArray(result)) return result[0] 
+        // O Knex retorna o resultado no índice [0] quando usamos .raw()
+        if(Array.isArray(result[0])) return result[0] 
         else return false
     } catch (error) {
         console.error('Erro ao selecionar bebidas:', error)
@@ -51,13 +52,14 @@ async function listarBebidas() {
     }
 }
 
-// Função para buscar bebida por ID
+// Exemplo de como deve ficar a função no DAO
 async function buscarBebidaById(id) {
     try {
-        let sql = `select * from tbl_bebida where id = ${id}`
+        // Agora consultamos a VIEW que criamos
+        let sql = `SELECT * FROM view_detalhes_bebida WHERE id = ${id}`
         let result = await knexConex.raw(sql)
 
-        if(Array.isArray(result)) return result[0] 
+        if(Array.isArray(result[0])) return result[0] 
         else return false
     } catch (error) {
         console.error('Erro ao selecionar bebida por ID:', error)

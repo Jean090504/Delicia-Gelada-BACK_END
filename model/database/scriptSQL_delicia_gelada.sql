@@ -91,9 +91,6 @@ insert into tbl_status (nome) values ('inativo'), ('ativo');
 
 insert into tbl_cargo (nome) values ('Admin'), ('Repositor'), ('Atendente'), ('Gerente');
 
-insert into tbl_tipo_bebida (nome, volume, teor_alcoolico, modo_preparo, ingredientes, perfil_sabor, dica_delicia) 
-values ('Batida', '70', '26', 'exemplo', 'fruta', 'doce', 'fe');
-
 -- Adicionei uma URL de imagem genérica para não quebrar a quantidade de colunas
 insert into tbl_usuario (nome, email_corporativo, senha, foto, id_cargo) 
 values ('Jean Costa', 'jean.costa@deliciagelada.com', '$2b$10$hQmNc4OF.u3fUvxGaTc3XeUe4tC6nTt8SSPU3cUPTkq8tXTBbHgVa', 'https://uploadsimageproject.blob.core.windows.net/uploadsimageproject/1781780375051_jean.png', 1);
@@ -110,76 +107,20 @@ values ('Diego de Padua', 'diego.padua@deliciagelada.com', '$2b$10$.6kPURZGp41GF
 insert into tbl_usuario (nome, email_corporativo, senha, foto, id_cargo) 
 values ('Mayara Andrade', 'mayara.andrade@deliciagelada.com', '$2b$10$11B/fQMXGHXhzUNetaF5dOP9rsB88Qj3gY6IXknnNgByu4g5R/3J2', 'https://uploadsimageproject.blob.core.windows.net/uploadsimageproject/1781781069438_may.png', 4);
 
-INSERT INTO tbl_tipo_bebida 
-(nome, volume, teor_alcoolico, modo_preparo, ingredientes, perfil_sabor, dica_delicia)
-VALUES 
-('Mojito', '300ml', '10%', 'Macere hortelã com açúcar, adicione rum, limão, gelo e soda.', 'Rum, hortelã, limão, açúcar, soda', 'Refrescante', 'Sirva bem gelado'),
-('Caipirinha', '250ml', '40%', 'Amasse limão com açúcar e adicione cachaça e gelo.', 'Cachaça, limão, açúcar, gelo', 'Cítrico', 'Use limão fresco'),
-('Piña Colada', '300ml', '12%', 'Bata tudo no liquidificador com gelo.', 'Rum, abacaxi, leite de coco', 'Doce', 'Decore com abacaxi');
-
-INSERT INTO tbl_categoria (nome, descricao, foto, id_status)
-VALUES 
-('Clássicos', 'Drinks tradicionais e famosos', 'classicos.jpg', 1),
-('Tropicais', 'Drinks com frutas e refrescantes', 'tropicais.jpg', 1),
-('Frozen', 'Drinks batidos com gelo', 'frozen.jpg', 1);
-
-
-INSERT INTO tbl_bebida 
-(nome, descricao, preco, imagem, id_tipo_bebida, id_usuario, id_status)
-VALUES 
-('Mojito Premium', 'Drink refrescante com hortelã e rum.', 25.90, 'mojito.jpg', 1, 1, 1),
-('Caipirinha Nacional', 'Clássico brasileiro com limão e cachaça.', 18.50, 'caipirinha.jpg', 2, 1, 1),
-('Piña Colada Tropical', 'Drink doce e cremoso com abacaxi.', 29.90, 'pina_colada.jpg', 3, 1, 1);
-
-INSERT INTO tbl_categoria_bebida (id_categoria, id_bebida)
-VALUES 
-(1, 1), -- Mojito -> Clássicos
-(1, 2), -- Caipirinha -> Clássicos
-(2, 1), -- Mojito -> Tropicais
-(2, 3), -- Piña Colada -> Tropicais
-(3, 3); -- Piña Colada -> Frozen
-
-INSERT INTO tbl_tipo_bebida 
-(nome, volume, teor_alcoolico, modo_preparo, ingredientes, perfil_sabor, dica_delicia)
-VALUES 
-('Suco Detox', '300ml', '0%', 'Bata todos os ingredientes no liquidificador com gelo e coe.', 'Maçã, couve, limão, gengibre, água', 'Refrescante e saudável', 'Sirva sem açúcar para mais leveza'),
-('Smoothie de Morango', '350ml', '0%', 'Bata tudo até ficar cremoso e sirva gelado.', 'Morango, banana, iogurte, gelo', 'Doce e cremoso', 'Use frutas congeladas para textura melhor'),
-('Limonada Suiça', '300ml', '0%', 'Bata limão com água e leite condensado e sirva com gelo.', 'Limão, água, leite condensado, gelo', 'Cítrico e doce', 'Bata pouco para não amargar'),
-('Água Aromatizada', '500ml', '0%', 'Misture frutas e ervas na água gelada e deixe descansar.', 'Água, limão, hortelã, laranja', 'Leve e refrescante', 'Deixe na geladeira por 2h antes de servir');
-
-INSERT INTO tbl_categoria (nome, descricao, foto, id_status)
-VALUES 
-('Refrescantes', 'Bebidas leves e hidratantes', 'refrescantes.jpg', 1),
-('Cremosos', 'Drinks cremosos sem álcool', 'cremosos.jpg', 1),
-('Naturais', 'Bebidas saudáveis e detox', 'naturais.jpg', 1);
-
-INSERT INTO tbl_bebida 
-(nome, descricao, preco, imagem, id_tipo_bebida, id_usuario, id_status)
-VALUES 
-('Suco Detox Verde', 'Bebida saudável com couve e limão.', 12.90, 'detox.jpg', 1, 1, 1),
-('Smoothie Morango Cream', 'Bebida cremosa de morango com banana.', 15.90, 'smoothie.jpg', 2, 1, 1),
-('Limonada Suíça Premium', 'Limonada cremosa doce e refrescante.', 10.90, 'limonada.jpg', 3, 1, 1),
-('Água Aromatizada Citrus', 'Água leve com frutas cítricas.', 8.90, 'agua_aromatizada.jpg', 4, 1, 1);
-
-INSERT INTO tbl_categoria_bebida (id_categoria, id_bebida)
-VALUES 
-(1, 1), -- Suco Detox -> Refrescantes
-(3, 1), -- Suco Detox -> Naturais
-(2, 2), -- Smoothie -> Cremosos
-(1, 2), -- Smoothie -> Refrescantes
-(2, 3), -- Limonada -> Cremosos
-(1, 3), -- Limonada -> Refrescantes
-(1, 4), -- Água aromatizada -> Refrescantes
-(3, 4); -- Água aromatizada -> Naturais
-
-INSERT INTO tbl_categoria (nome, descricao, foto, id_status)
-VALUES 
-('Não alcoólicos', 'Drinks sem álcool, leves e refrescantes', 'nao_alcoolicos.jpg', 1);
-
-update tbl_categoria_bebida set id_categoria = 7  where id in (1, 3, 2);
-update tbl_categoria_bebida set id_categoria = 7  where id in (5, 6, 7);
-
 select * from tbl_categoria_bebida;
+
+CREATE OR REPLACE VIEW view_detalhes_bebida AS
+SELECT 
+    tbl_bebida.id,
+    tbl_bebida.nome,
+    tbl_bebida.descricao,
+    tbl_bebida.preco,
+    tbl_bebida.imagem,
+    tbl_tipo_bebida.volume AS volume_em_mililitros, 
+    tbl_tipo_bebida.teor_alcoolico AS porcentagem_de_teor_alcoolico, 
+    tbl_tipo_bebida.perfil_sabor AS perfil_de_sabor_da_bebida
+FROM tbl_bebida 
+INNER JOIN tbl_tipo_bebida ON tbl_bebida.id_tipo_bebida = tbl_tipo_bebida.id;
 
 -- 4. TRIGGERS
 DELIMITER $$
@@ -209,7 +150,7 @@ select * from tbl_tipo_bebida;
 select * from tbl_usuario;
 select * from tbl_status;
 select * from tbl_categoria;
- 
+select * from tbl_bebida; 
  
 CREATE VIEW vw_bebidas_nao_alcoolicas AS
 SELECT bebida.* FROM tbl_bebida AS bebida

@@ -56,8 +56,12 @@ rota.delete('/categoria/:id', async (request, response) => {
 rota.get('/categoria', async (request, response) => {
     let result = await controllerCategoria.listarCategorias()
 
-    response.status(result.status_code)
-    response.json(result)
+    // Proteção: Se result for undefined ou null, definimos um padrão de erro
+    if (!result) {
+        return response.status(500).json({ status: false, message: "Erro interno no servidor" })
+    }
+
+    response.status(result.status_code).json(result)
 })
 
 // Rota para listar uma categoria específica por ID

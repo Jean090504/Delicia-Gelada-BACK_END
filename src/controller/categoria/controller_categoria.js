@@ -189,6 +189,7 @@ const buscarCategoriaById = async (id) => {
     }
 }
 // Função para deletar uma categoria específica pelo ID
+// Função para deletar uma categoria específica pelo ID
 const deleteCategoriaById = async (id) => {
     let message = JSON.parse(JSON.stringify(config_messages))
 
@@ -200,9 +201,13 @@ const deleteCategoriaById = async (id) => {
             let result = await categoriaDAO.deleteCategoria(id)
         
             if(result){
-                return message.SUCCESS_DELETED_ITEM // 200
+                // Montamos o pacote manualmente para garantir que não vai dar undefined
+                message.DEFAULT_MESSAGE.status = true
+                message.DEFAULT_MESSAGE.status_code = 200
+                message.DEFAULT_MESSAGE.message = "Categoria excluída com sucesso!"
+                return message.DEFAULT_MESSAGE
             }else{
-                return message.ERROR_INTERNAL_SERVER_MODEL // 500
+                return { status: false, status_code: 500, message: "Erro no banco de dados." }
             }
 
         } else {
@@ -214,8 +219,13 @@ const deleteCategoriaById = async (id) => {
             }
         }
     } catch (error) {
-        console.log(error)
-        return message.ERROR_INTERNAL_SERVER_MODEL
+        console.log("Erro no BD ao deletar:", error)
+        // RETORNO INFALÍVEL PARA O ERRO DE CHAVE ESTRANGEIRA (Bebidas Vinculadas)
+        return {
+            status: false,
+            status_code: 500,
+            message: "Não é possível excluir esta categoria, pois existem bebidas vinculadas a ela."
+        }
     }
 }
 
