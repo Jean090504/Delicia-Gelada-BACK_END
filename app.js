@@ -13,7 +13,7 @@ const app = express()
 
 app.use(express.json())
 
-
+//  Preflight antes de tudo
 app.options('*', (req, res) => {
     res.header('Access-Control-Allow-Origin', req.headers.origin || '*')
     res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
@@ -24,7 +24,7 @@ app.options('*', (req, res) => {
 
 const corsOptions = {
     origin: function(origin, callback) {
-        callback(null, true) // permite qualquer origem
+        callback(null, true)
     },
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
@@ -32,12 +32,9 @@ const corsOptions = {
 }
 
 app.use(cors(corsOptions))
+app.use(helmet({ crossOriginResourcePolicy: false }))
 
-
-app.use(helmet({
-    crossOriginResourcePolicy: false
-}))
-
+//  Importação das rotas
 const cargoRotas = require('./src/routes/cargo/routes_cargo.js')
 const tipoBebidaRotas = require('./src/routes/tipo_bebida/routes_tipo_bebida.js')
 const statusRotas = require('./src/routes/status/routes_status.js')
