@@ -96,7 +96,19 @@ values ('Batida', '70', '26', 'exemplo', 'fruta', 'doce', 'fe');
 
 -- Adicionei uma URL de imagem genérica para não quebrar a quantidade de colunas
 insert into tbl_usuario (nome, email_corporativo, senha, foto, id_cargo) 
-values ('José Almeida', 'jose.almeida@deliciagelada.com', '1234', 'https://linkdafoto.com/foto.jpg', 4);
+values ('Jean Costa', 'jean.costa@deliciagelada.com', '$2b$10$hQmNc4OF.u3fUvxGaTc3XeUe4tC6nTt8SSPU3cUPTkq8tXTBbHgVa', 'https://uploadsimageproject.blob.core.windows.net/uploadsimageproject/1781780375051_jean.png', 1);
+
+insert into tbl_usuario (nome, email_corporativo, senha, foto, id_cargo) 
+values ('Anderson Ribeiro', 'anderson.ribeiro@deliciagelada.com', '$2b$10$QbSK3FIiUGms5hEMvQHXEOw.3.i0zywtWx1BSuHWyS.wLI3Ni/tOi', 'https://uploadsimageproject.blob.core.windows.net/uploadsimageproject/1781780908462_anderson.png', 3);
+
+insert into tbl_usuario (nome, email_corporativo, senha, foto, id_cargo) 
+values ('Daniele Silva', 'daniele.silva@deliciagelada.com', '$2b$10$Luwo0d0BcN.Ps4jE2iV8neqtUDIfmLQ2ELrpElE0.Hf7UzXGGXw4C', 'https://uploadsimageproject.blob.core.windows.net/uploadsimageproject/1781780958615_daniele.png', 2);
+
+insert into tbl_usuario (nome, email_corporativo, senha, foto, id_cargo) 
+values ('Diego de Padua', 'diego.padua@deliciagelada.com', '$2b$10$.6kPURZGp41GFwk0bW8W1.weQJG9eiA.dikOFJT2NQtkrl5J9iFc2', 'https://uploadsimageproject.blob.core.windows.net/uploadsimageproject/1781781028287_diego.png', 2);
+
+insert into tbl_usuario (nome, email_corporativo, senha, foto, id_cargo) 
+values ('Mayara Andrade', 'mayara.andrade@deliciagelada.com', '$2b$10$11B/fQMXGHXhzUNetaF5dOP9rsB88Qj3gY6IXknnNgByu4g5R/3J2', 'https://uploadsimageproject.blob.core.windows.net/uploadsimageproject/1781781069438_may.png', 4);
 
 -- 4. TRIGGERS
 DELIMITER $$
