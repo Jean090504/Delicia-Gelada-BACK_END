@@ -16,7 +16,7 @@ const { upload } = require('../../controller/config_multer/multer.js')
 const bodyParserJSON = bodyParser.json()
 
 // Rota para inserir uma nova categoria
-rota.post('/categoria', upload.single('foto'), bodyParserJSON, async (request, response) => {
+rota.post('/categoria', upload.single('foto'), async (request, response) => {
     // recebe o conteudo dentro do body da requisição
     let dados = request.body
     let conteType = request.headers['content-type']// linha adicionada para receber o content-type do header da requisição

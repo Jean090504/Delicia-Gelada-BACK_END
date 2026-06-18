@@ -58,10 +58,10 @@ const inserirCategoria = async (categoria, contentType, file) => {
 
             // 1. Se o arquivo da foto chegou, faz o upload para a Azure
             if(file){
-                let urlFoto = await azureUpload.uploadFoto(file)
+                let urlFotoAzure = await azureUpload.uploadFiles(file)
 
-                if(urlFoto) {
-                    categoria.foto = urlFoto // Injeta a URL segura no objeto da categoria
+                if(urlFotoAzure) {
+                    categoria.foto = urlFotoAzure // Injeta a URL segura no objeto da categoria
                 } else {
                     return message.ERROR_INTERNAL_SERVER_MODEL // Falhou ao subir pra nuvem
                 }
