@@ -8,31 +8,43 @@
 const express = require('express')
 const cors = require('cors')
 const helmet = require('helmet')
-const multer = require('multer')
 
-// Criação do objeto app
 const app = express()
 
-// Permite que o Express entenda JSON no corpo 
 app.use(express.json())
 
+
+app.options('*', (req, res) => {
+    res.header('Access-Control-Allow-Origin', req.headers.origin || '*')
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+    res.header('Access-Control-Allow-Credentials', 'true')
+    res.sendStatus(200)
+})
+
 const corsOptions = {
-    origin: [
-        'https://deliciageladav10.vercel.app',
-        'http://localhost:5500',
-        'http://localhost:3000',
-        'http://127.0.0.1:5500',
-        'http://127.0.0.1:3000'
-    ],
+    origin: function(origin, callback) {
+        callback(null, true) // permite qualquer origem
+    },
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true
 }
 
 app.use(cors(corsOptions))
-app.use(helmet())
 
-// Remova o cors() duplicado das rotas — já está configurado globalmente
+
+app.use(helmet({
+    crossOriginResourcePolicy: false
+}))
+
+const cargoRotas = require('./src/routes/cargo/routes_cargo.js')
+const tipoBebidaRotas = require('./src/routes/tipo_bebida/routes_tipo_bebida.js')
+const statusRotas = require('./src/routes/status/routes_status.js')
+const categoriaRotas = require('./src/routes/categoria/routes_categoria.js')
+const usuarioRotas = require('./src/routes/usuario/routes_usuario.js')
+const bebidaRotas = require('./src/routes/bebidas/routes_bebidas.js')
+
 app.use('/v1/fynix/deliciagelada', cargoRotas)
 app.use('/v1/fynix/deliciagelada', tipoBebidaRotas)
 app.use('/v1/fynix/deliciagelada', statusRotas)
